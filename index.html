@@ -13,9 +13,9 @@
             --text-primary: #e0e0e0;
             --text-secondary: #a0a0a0;
             --text-muted: #707070;
-            --accent-orange: #ff8c42;
-            --accent-orange-hover: #ff9d5c;
-            --accent-orange-light: rgba(255, 140, 66, 0.1);
+            --accent-blue: #4A9EFF;
+            --accent-blue-hover: #5AABFF;
+            --accent-blue-light: rgba(74, 158, 255, 0.1);
             --success: #4ade80;
             --success-dark: #22c55e;
             --warning: #fbbf24;
@@ -23,13 +23,13 @@
             --border: #333;
             --border-light: #404040;
         }
-
+ 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-
+ 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
             background: var(--bg-primary);
@@ -37,7 +37,7 @@
             min-height: 100vh;
             padding: 20px;
         }
-
+ 
         .container {
             max-width: 1400px;
             margin: 0 auto;
@@ -46,25 +46,25 @@
             overflow: hidden;
             border: 1px solid var(--border);
         }
-
+ 
         .header {
-            background: linear-gradient(135deg, #ff8c42 0%, #ff6b35 100%);
+            background: linear-gradient(135deg, #4A9EFF 0%, #3B8FEF 100%);
             color: white;
             padding: 30px;
             text-align: center;
         }
-
+ 
         .header h1 {
             font-size: 2.5em;
             margin-bottom: 10px;
             font-weight: 700;
         }
-
+ 
         .header p {
             opacity: 0.95;
             font-size: 1.1em;
         }
-
+ 
         .budget-banner {
             background: var(--bg-tertiary);
             padding: 20px 30px;
@@ -75,35 +75,35 @@
             gap: 20px;
             border-bottom: 1px solid var(--border);
         }
-
+ 
         .budget-banner.success {
             border-left: 4px solid var(--success);
         }
-
+ 
         .budget-banner.warning {
             border-left: 4px solid var(--warning);
         }
-
+ 
         .budget-banner.danger {
             border-left: 4px solid var(--danger);
         }
-
+ 
         .budget-info h3 {
             font-size: 1.8em;
             margin-bottom: 5px;
-            color: var(--accent-orange);
+            color: var(--accent-blue);
         }
-
+ 
         .budget-info p {
             color: var(--text-secondary);
         }
-
+ 
         .budget-progress {
             flex: 1;
             max-width: 400px;
             min-width: 200px;
         }
-
+ 
         .budget-bar {
             background: var(--bg-card);
             height: 20px;
@@ -112,20 +112,20 @@
             margin-bottom: 5px;
             border: 1px solid var(--border);
         }
-
+ 
         .budget-bar-fill {
             height: 100%;
-            background: linear-gradient(90deg, var(--accent-orange) 0%, var(--accent-orange-hover) 100%);
+            background: linear-gradient(90deg, var(--accent-blue) 0%, var(--accent-blue-hover) 100%);
             transition: width 0.5s;
         }
-
+ 
         .tabs {
             display: flex;
             background: var(--bg-card);
             border-bottom: 1px solid var(--border);
             overflow-x: auto;
         }
-
+ 
         .tab {
             flex: 1;
             min-width: 100px;
@@ -140,43 +140,43 @@
             color: var(--text-secondary);
             border-bottom: 3px solid transparent;
         }
-
+ 
         .tab:hover {
             background: var(--bg-tertiary);
             color: var(--text-primary);
         }
-
+ 
         .tab.active {
             background: var(--bg-secondary);
-            color: var(--accent-orange);
-            border-bottom-color: var(--accent-orange);
+            color: var(--accent-blue);
+            border-bottom-color: var(--accent-blue);
         }
-
+ 
         .content {
             padding: 30px;
         }
-
+ 
         .tab-content {
             display: none;
         }
-
+ 
         .tab-content.active {
             display: block;
             animation: fadeIn 0.3s;
         }
-
+ 
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
-
+ 
         .week-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 20px;
             margin-top: 20px;
         }
-
+ 
         .day-card {
             background: var(--bg-card);
             border-radius: 12px;
@@ -185,18 +185,18 @@
             transition: all 0.3s;
             position: relative;
         }
-
+ 
         .day-card:hover {
-            border-color: var(--accent-orange);
-            box-shadow: 0 8px 24px rgba(255, 140, 66, 0.15);
+            border-color: var(--accent-blue);
+            box-shadow: 0 8px 24px rgba(74, 158, 255, 0.15);
         }
-
+ 
         .day-card h3 {
-            color: var(--accent-orange);
+            color: var(--accent-blue);
             margin-bottom: 15px;
             font-size: 1.3em;
         }
-
+ 
         .day-cost {
             position: absolute;
             top: 20px;
@@ -208,7 +208,7 @@
             font-weight: 600;
             font-size: 0.9em;
         }
-
+ 
         .meal-slot {
             background: var(--bg-tertiary);
             padding: 15px;
@@ -219,28 +219,28 @@
             position: relative;
             border: 1px solid var(--border);
         }
-
+ 
         .meal-slot:hover {
-            background: var(--accent-orange-light);
-            border-color: var(--accent-orange);
+            background: var(--accent-blue-light);
+            border-color: var(--accent-blue);
         }
-
+ 
         .meal-slot.empty {
             border: 2px dashed var(--border-light);
             color: var(--text-muted);
             text-align: center;
         }
-
+ 
         .meal-slot.empty:hover {
-            border-color: var(--accent-orange);
+            border-color: var(--accent-blue);
             color: var(--text-secondary);
         }
-
+ 
         .meal-slot.is-leftover {
             border-left: 4px solid var(--success);
             background: rgba(74, 222, 128, 0.1);
         }
-
+ 
         .meal-slot h4 {
             font-size: 0.9em;
             color: var(--text-muted);
@@ -248,18 +248,18 @@
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
-
+ 
         .meal-slot p {
             font-weight: 600;
             color: var(--text-primary);
         }
-
+ 
         .meal-slot .nutrition {
             font-size: 0.85em;
             margin-top: 8px;
             color: var(--text-secondary);
         }
-
+ 
         .leftover-badge {
             position: absolute;
             top: 10px;
@@ -271,10 +271,10 @@
             font-size: 0.75em;
             font-weight: 600;
         }
-
+ 
         .batch-badge {
             display: inline-block;
-            background: var(--accent-orange);
+            background: var(--accent-blue);
             color: white;
             padding: 3px 8px;
             border-radius: 12px;
@@ -282,14 +282,14 @@
             font-weight: 600;
             margin-top: 5px;
         }
-
+ 
         .recipe-grid, .ingredients-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 20px;
             margin-top: 20px;
         }
-
+ 
         .recipe-card, .ingredient-card {
             background: var(--bg-card);
             border-radius: 12px;
@@ -299,26 +299,26 @@
             border: 1px solid var(--border);
             position: relative;
         }
-
+ 
         .recipe-card:hover, .ingredient-card:hover {
-            border-color: var(--accent-orange);
-            box-shadow: 0 8px 24px rgba(255, 140, 66, 0.15);
+            border-color: var(--accent-blue);
+            box-shadow: 0 8px 24px rgba(74, 158, 255, 0.15);
             transform: translateY(-2px);
         }
-
+ 
         .recipe-card.batch-cooking {
-            border-left: 4px solid var(--accent-orange);
+            border-left: 4px solid var(--accent-blue);
         }
-
+ 
         .recipe-card.good-for-leftovers {
             border-left: 4px solid var(--success);
         }
-
+ 
         .recipe-card h3, .ingredient-card h3 {
-            color: var(--accent-orange);
+            color: var(--accent-blue);
             margin-bottom: 10px;
         }
-
+ 
         .recipe-card .meta, .ingredient-card .meta {
             display: flex;
             gap: 15px;
@@ -327,26 +327,26 @@
             margin-top: 10px;
             flex-wrap: wrap;
         }
-
+ 
         .recipe-tags {
             display: flex;
             gap: 5px;
             margin-top: 10px;
             flex-wrap: wrap;
         }
-
+ 
         .recipe-tag {
-            background: var(--accent-orange);
+            background: var(--accent-blue);
             color: white;
             padding: 3px 8px;
             border-radius: 12px;
             font-size: 0.75em;
         }
-
+ 
         .recipe-tag.leftover {
             background: var(--success);
         }
-
+ 
         .btn {
             padding: 12px 24px;
             border: none;
@@ -356,49 +356,49 @@
             cursor: pointer;
             transition: all 0.3s;
         }
-
+ 
         .btn-primary {
-            background: var(--accent-orange);
+            background: var(--accent-blue);
             color: white;
         }
-
+ 
         .btn-primary:hover {
-            background: var(--accent-orange-hover);
+            background: var(--accent-blue-hover);
             transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(255, 140, 66, 0.3);
+            box-shadow: 0 8px 20px rgba(74, 158, 255, 0.3);
         }
-
+ 
         .btn-secondary {
             background: var(--bg-tertiary);
             color: var(--text-primary);
             border: 1px solid var(--border);
         }
-
+ 
         .btn-secondary:hover {
             background: var(--bg-card);
-            border-color: var(--accent-orange);
+            border-color: var(--accent-blue);
         }
-
+ 
         .btn-success {
             background: var(--success);
             color: white;
         }
-
+ 
         .btn-success:hover {
             background: var(--success-dark);
         }
-
+ 
         .btn-small {
             padding: 8px 20px;
             font-size: 0.9em;
         }
-
+ 
         .btn-group {
             display: flex;
             gap: 10px;
             flex-wrap: wrap;
         }
-
+ 
         .modal {
             display: none;
             position: fixed;
@@ -412,11 +412,11 @@
             justify-content: center;
             backdrop-filter: blur(4px);
         }
-
+ 
         .modal.active {
             display: flex;
         }
-
+ 
         .modal-content {
             background: var(--bg-secondary);
             border-radius: 16px;
@@ -428,23 +428,23 @@
             animation: slideUp 0.3s;
             border: 1px solid var(--border);
         }
-
+ 
         @keyframes slideUp {
             from { opacity: 0; transform: translateY(50px); }
             to { opacity: 1; transform: translateY(0); }
         }
-
+ 
         .modal-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 20px;
         }
-
+ 
         .modal-header h2 {
-            color: var(--accent-orange);
+            color: var(--accent-blue);
         }
-
+ 
         .close-btn {
             background: none;
             border: none;
@@ -454,22 +454,22 @@
             line-height: 1;
             transition: color 0.3s;
         }
-
+ 
         .close-btn:hover {
-            color: var(--accent-orange);
+            color: var(--accent-blue);
         }
-
+ 
         .form-group {
             margin-bottom: 20px;
         }
-
+ 
         .form-group label {
             display: block;
             margin-bottom: 8px;
             font-weight: 600;
             color: var(--text-primary);
         }
-
+ 
         .form-group input,
         .form-group textarea,
         .form-group select {
@@ -482,61 +482,61 @@
             background: var(--bg-card);
             color: var(--text-primary);
         }
-
+ 
         .form-group input:focus,
         .form-group textarea:focus,
         .form-group select:focus {
             outline: none;
-            border-color: var(--accent-orange);
+            border-color: var(--accent-blue);
         }
-
+ 
         .form-group textarea {
             min-height: 100px;
             resize: vertical;
         }
-
+ 
         .form-group input.found {
             border-color: var(--success);
         }
-
+ 
         .form-group input.not-found {
             border-color: var(--warning);
         }
-
+ 
         .form-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 15px;
         }
-
+ 
         .checkbox-group {
             display: flex;
             align-items: center;
             gap: 10px;
             margin-top: 10px;
         }
-
+ 
         .checkbox-group input[type="checkbox"] {
             width: 20px;
             height: 20px;
             cursor: pointer;
         }
-
+ 
         .ingredient-list {
             margin-top: 10px;
         }
-
+ 
         .ingredient-item {
             display: flex;
             gap: 10px;
             margin-bottom: 10px;
             align-items: center;
         }
-
+ 
         .ingredient-item input {
             flex: 1;
         }
-
+ 
         .ingredient-item button {
             padding: 8px 15px;
             background: var(--danger);
@@ -545,28 +545,28 @@
             border-radius: 8px;
             cursor: pointer;
         }
-
+ 
         .ingredient-item .btn-add {
             background: var(--success);
         }
-
+ 
         .shopping-list {
             background: var(--bg-card);
             border-radius: 12px;
             padding: 20px;
             border: 1px solid var(--border);
         }
-
+ 
         .shopping-category {
             margin-bottom: 20px;
         }
-
+ 
         .shopping-category h3 {
-            color: var(--accent-orange);
+            color: var(--accent-blue);
             margin-bottom: 10px;
             font-size: 1.2em;
         }
-
+ 
         .shopping-item {
             background: var(--bg-tertiary);
             padding: 12px;
@@ -577,26 +577,26 @@
             align-items: center;
             border: 1px solid var(--border);
         }
-
+ 
         .shopping-item input[type="checkbox"] {
             width: 20px;
             height: 20px;
             margin-right: 10px;
             cursor: pointer;
         }
-
+ 
         .shopping-item.checked {
             opacity: 0.5;
             text-decoration: line-through;
         }
-
+ 
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 20px;
             margin-top: 20px;
         }
-
+ 
         .stat-card {
             background: var(--bg-card);
             padding: 25px;
@@ -604,48 +604,48 @@
             text-align: center;
             border: 1px solid var(--border);
         }
-
+ 
         .stat-card h3 {
             font-size: 2.5em;
             margin-bottom: 10px;
-            color: var(--accent-orange);
+            color: var(--accent-blue);
         }
-
+ 
         .stat-card p {
             color: var(--text-secondary);
         }
-
+ 
         .stat-card.success {
             border-color: var(--success);
         }
-
+ 
         .stat-card.success h3 {
             color: var(--success);
         }
-
+ 
         .stat-card.danger {
             border-color: var(--danger);
         }
-
+ 
         .stat-card.danger h3 {
             color: var(--danger);
         }
-
+ 
         .nutrition-bars {
             margin-top: 20px;
         }
-
+ 
         .nutrition-bar {
             margin-bottom: 15px;
         }
-
+ 
         .nutrition-bar-header {
             display: flex;
             justify-content: space-between;
             margin-bottom: 5px;
             font-weight: 600;
         }
-
+ 
         .nutrition-bar-fill {
             background: var(--bg-card);
             height: 30px;
@@ -653,10 +653,10 @@
             overflow: hidden;
             border: 1px solid var(--border);
         }
-
+ 
         .nutrition-bar-progress {
             height: 100%;
-            background: linear-gradient(90deg, var(--accent-orange) 0%, var(--accent-orange-hover) 100%);
+            background: linear-gradient(90deg, var(--accent-blue) 0%, var(--accent-blue-hover) 100%);
             transition: width 0.5s;
             display: flex;
             align-items: center;
@@ -664,7 +664,7 @@
             color: white;
             font-weight: 600;
         }
-
+ 
         .leftover-option {
             background: rgba(74, 222, 128, 0.1);
             border: 2px solid var(--success);
@@ -674,19 +674,19 @@
             cursor: pointer;
             transition: all 0.3s;
         }
-
+ 
         .leftover-option:hover {
             background: rgba(74, 222, 128, 0.15);
             box-shadow: 0 5px 15px rgba(74, 222, 128, 0.2);
         }
-
+ 
         .leftover-option label {
             display: flex;
             align-items: center;
             gap: 10px;
             cursor: pointer;
         }
-
+ 
         .rohlik-badge {
             display: inline-flex;
             align-items: center;
@@ -698,21 +698,21 @@
             font-size: 0.75em;
             font-weight: 600;
         }
-
+ 
         .info-box {
             background: var(--bg-card);
             padding: 15px;
             border-radius: 10px;
             margin-bottom: 20px;
             border: 1px solid var(--border);
-            border-left: 4px solid var(--accent-orange);
+            border-left: 4px solid var(--accent-blue);
         }
-
+ 
         .info-box p {
             color: var(--text-secondary);
             margin: 0;
         }
-
+ 
         @media (max-width: 768px) {
             .budget-banner {
                 flex-direction: column;
@@ -727,22 +727,22 @@
                 grid-template-columns: 1fr;
             }
         }
-
+ 
         ::-webkit-scrollbar {
             width: 10px;
         }
-
+ 
         ::-webkit-scrollbar-track {
             background: var(--bg-card);
         }
-
+ 
         ::-webkit-scrollbar-thumb {
             background: var(--border-light);
             border-radius: 5px;
         }
-
+ 
         ::-webkit-scrollbar-thumb:hover {
-            background: var(--accent-orange);
+            background: var(--accent-blue);
         }
     </style>
 </head>
@@ -752,7 +752,7 @@
             <h1>🍽️ Jídelníček na týden</h1>
             <p>Úsporný režim • Databáze surovin • Rohlík.cz</p>
         </div>
-
+ 
         <div class="budget-banner" id="budgetBanner">
             <div class="budget-info">
                 <h3 id="weeklySpent">0 Kč</h3>
@@ -769,7 +769,7 @@
                 <p>Zbývá</p>
             </div>
         </div>
-
+ 
         <div class="tabs">
             <button class="tab active" onclick="switchTab('planner')">📅 Plánovač</button>
             <button class="tab" onclick="switchTab('recipes')">📖 Recepty</button>
@@ -777,7 +777,7 @@
             <button class="tab" onclick="switchTab('shopping')">🛒 Nákup</button>
             <button class="tab" onclick="switchTab('stats')">📊 Statistiky</button>
         </div>
-
+ 
         <div class="content">
             <div id="planner" class="tab-content active">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
@@ -794,7 +794,7 @@
                 </div>
                 <div id="weekGrid" class="week-grid"></div>
             </div>
-
+ 
             <div id="recipes" class="tab-content">
                 <div style="display: flex; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
                     <h2>Databáze receptů</h2>
@@ -802,7 +802,7 @@
                 </div>
                 <div id="recipeGrid" class="recipe-grid"></div>
             </div>
-
+ 
             <div id="ingredients" class="tab-content">
                 <div style="display: flex; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
                     <h2>Databáze surovin</h2>
@@ -813,7 +813,7 @@
                 </div>
                 <div id="ingredientsGrid" class="ingredients-grid"></div>
             </div>
-
+ 
             <div id="shopping" class="tab-content">
                 <div style="display: flex; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
                     <h2>Nákupní seznam</h2>
@@ -824,18 +824,18 @@
                 </div>
                 
                 <div id="shoppingHistory" style="margin-bottom: 30px; display: none;">
-                    <h3 style="color: var(--accent-orange); margin-bottom: 15px;">📜 Historie nákupních seznamů</h3>
+                    <h3 style="color: var(--accent-blue); margin-bottom: 15px;">📜 Historie nákupních seznamů</h3>
                     <div id="historyList"></div>
                 </div>
                 
                 <div id="shoppingList" class="shopping-list"></div>
                 
                 <div id="checkedItemsList" style="margin-top: 30px; display: none;">
-                    <h3 style="color: var(--accent-orange); margin-bottom: 15px;">✓ Nakliknuté položky</h3>
+                    <h3 style="color: var(--accent-blue); margin-bottom: 15px;">✓ Nakliknuté položky</h3>
                     <div id="checkedItems" class="shopping-list"></div>
                 </div>
             </div>
-
+ 
             <div id="stats" class="tab-content">
                 <h2>Týdenní statistiky</h2>
                 <div id="statsGrid" class="stats-grid"></div>
@@ -843,7 +843,7 @@
             </div>
         </div>
     </div>
-
+ 
     <!-- Modal pro výběr jídla -->
     <div id="mealModal" class="modal">
         <div class="modal-content">
@@ -854,7 +854,7 @@
             <div id="mealModalContent"></div>
         </div>
     </div>
-
+ 
     <!-- Modal pro přidání/úpravu receptu -->
     <div id="recipeModal" class="modal">
         <div class="modal-content">
@@ -932,7 +932,7 @@
                         <label for="goodForLeftovers">Dobré na zbytky</label>
                     </div>
                 </div>
-
+ 
                 <div class="form-group">
                     <label>Ingredience *</label>
                     <small style="color: var(--text-secondary); display: block; margin-bottom: 10px;">
@@ -941,7 +941,7 @@
                     <div id="ingredientsList" class="ingredient-list"></div>
                     <button type="button" class="btn btn-secondary btn-small" onclick="addRecipeIngredientField()">+ Ingredience</button>
                 </div>
-
+ 
                 <div class="form-group">
                     <label>Postup přípravy</label>
                     <textarea id="recipeInstructions"></textarea>
@@ -950,7 +950,7 @@
             </form>
         </div>
     </div>
-
+ 
     <!-- Modal pro přidání/úpravu suroviny -->
     <div id="ingredientModal" class="modal">
         <div class="modal-content">
@@ -987,6 +987,8 @@
                                 <option value="l">l</option>
                                 <option value="ks">ks</option>
                             <option value="hrneček">hrneček (~250ml)</option>
+                            <option value="lžíce">lžíce (~15ml)</option>
+                            <option value="lžička">lžička (~5ml)</option>
                             </select>
                         </div>
                         <div style="margin-top: 8px; display: flex; gap: 5px; flex-wrap: wrap;">
@@ -1013,7 +1015,7 @@
             </form>
         </div>
     </div>
-
+ 
     <script>
         // Globální proměnné
         let recipes = [];
@@ -1080,10 +1082,10 @@
             const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
             return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
         }
-
+ 
         const daysOfWeek = ['Pondělí', 'Úterý', 'Středa', 'Čtvrtek', 'Pátek', 'Sobota', 'Neděle'];
         const mealTypes = { snidane: 'Snídaně', obed: 'Oběd', vecere: 'Večeře', priloha: 'Příloha' };
-
+ 
         // Inicializace
         async function init() {
             await loadData();
@@ -1095,7 +1097,7 @@
             updateBudget();
             renderStats();
         }
-
+ 
         // Načtení dat
         async function loadData() {
             try {
@@ -1109,7 +1111,7 @@
                     window.storage.get('recipeIngredients', true),
                     window.storage.get('specialDays', true)
                 ]);
-
+ 
                 if (data[0]) recipes = JSON.parse(data[0].value);
                 if (data[1]) weekPlan = JSON.parse(data[1].value);
                 if (data[2]) shoppingList = JSON.parse(data[2].value);
@@ -1122,7 +1124,7 @@
                 console.log('Načítám nová data...');
             }
         }
-
+ 
         // Uložení dat
         async function saveData() {
             try {
@@ -1140,7 +1142,7 @@
                 console.error('Chyba při ukládání:', error);
             }
         }
-
+ 
         // Výchozí recepty
         function addDefaultRecipes() {
             if (recipes.length === 0) {
@@ -1152,7 +1154,7 @@
                 saveData();
             }
         }
-
+ 
         // Přepínání záložek
         function switchTab(tabName) {
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
@@ -1160,11 +1162,11 @@
             
             event.target.classList.add('active');
             document.getElementById(tabName).classList.add('active');
-
+ 
             if (tabName === 'stats') renderStats();
             if (tabName === 'ingredients') renderIngredients();
         }
-
+ 
         // Aktualizace rozpočtu
         function updateBudget() {
             const weekKey = getWeekKey(currentWeekOffset);
@@ -1173,7 +1175,7 @@
             
             let totalSpent = 0;
             const usedRecipes = new Set();
-
+ 
             Object.entries(currentWeekPlan).forEach(([mealKey, recipeId]) => {
                 if (!currentLeftovers[mealKey] && !usedRecipes.has(recipeId)) {
                     const recipe = recipes.find(r => r.id === recipeId);
@@ -1183,14 +1185,14 @@
                     }
                 }
             });
-
+ 
             const remaining = weeklyBudget.target - totalSpent;
             const percentage = (totalSpent / weeklyBudget.max) * 100;
-
+ 
             document.getElementById('weeklySpent').textContent = `${totalSpent} Kč`;
             document.getElementById('budgetRemaining').textContent = `${remaining} Kč`;
             document.getElementById('budgetBar').style.width = `${Math.min(percentage, 100)}%`;
-
+ 
             const banner = document.getElementById('budgetBanner');
             banner.className = 'budget-banner';
             
@@ -1202,7 +1204,7 @@
                 banner.classList.add('success');
             }
         }
-
+ 
         // ===== PLÁNOVAČ =====
         function renderWeekPlan() {
             const grid = document.getElementById('weekGrid');
@@ -1217,7 +1219,7 @@
             const currentSpecialDays = specialDays[weekKey] || {};
             
             const dates = getWeekDates(currentWeekOffset);
-
+ 
             dates.forEach((date, dayIndex) => {
                 const dayCard = document.createElement('div');
                 dayCard.className = 'day-card';
@@ -1225,7 +1227,7 @@
                 // Zvýraznit dnešní den
                 const isToday = date.toDateString() === new Date().toDateString();
                 if (isToday) {
-                    dayCard.style.border = '2px solid var(--accent-orange)';
+                    dayCard.style.border = '2px solid var(--accent-blue)';
                 }
                 
                 const specialDay = currentSpecialDays[dayIndex];
@@ -1267,9 +1269,9 @@
                     };
                     
                     html += `
-                        <div style="background: var(--accent-orange-light); border: 2px solid var(--accent-orange); border-radius: 10px; padding: 15px; margin: 10px 0; text-align: center;">
+                        <div style="background: var(--accent-blue-light); border: 2px solid var(--accent-blue); border-radius: 10px; padding: 15px; margin: 10px 0; text-align: center;">
                             <div style="font-size: 2em; margin-bottom: 5px;">${icons[specialDay.type]}</div>
-                            <strong style="color: var(--accent-orange);">${labels[specialDay.type]}</strong>
+                            <strong style="color: var(--accent-blue);">${labels[specialDay.type]}</strong>
                             ${specialDay.note ? `<p style="color: var(--text-secondary); font-size: 0.9em; margin-top: 5px;">${specialDay.note}</p>` : ''}
                         </div>
                     `;
@@ -1287,10 +1289,10 @@
                 dayCard.innerHTML = html;
                 grid.appendChild(dayCard);
             });
-
+ 
             updateBudget();
         }
-
+ 
         function renderMealSlots(dayIndex, mealType, maxSlots = 1, weekKey, currentWeekPlan, currentLeftovers) {
             let html = `<div style="margin-bottom: 5px;"><strong style="color: var(--text-secondary); font-size: 0.85em;">${mealTypes[mealType]}</strong></div>`;
             
@@ -1333,7 +1335,7 @@
             
             return html;
         }
-
+ 
         function selectMeal(weekKey, mealKey, showOnlyPriloha = false) {
             // Parse mealKey: "0-obed-0" nebo "0-snidane"
             const parts = mealKey.split('-');
@@ -1404,7 +1406,7 @@
                 });
             }
             
-            html += '<h3 style="margin: 20px 0 15px 0; color: var(--accent-orange);">🍳 Existující recepty</h3>';
+            html += '<h3 style="margin: 20px 0 15px 0; color: var(--accent-blue);">🍳 Existující recepty</h3>';
             html += '<div class="recipe-grid">';
             filteredRecipes.forEach(recipe => {
                 html += `
@@ -1435,7 +1437,7 @@
             content.innerHTML = html;
             modal.classList.add('active');
         }
-
+ 
         function confirmMealSelection() {
             const selected = document.querySelector('input[name="mealChoice"]:checked');
             if (!selected) {
@@ -1464,7 +1466,7 @@
             closeMealModal();
             renderWeekPlan();
         }
-
+ 
         function removeMeal() {
             const { weekKey, mealKey } = currentMealSlot;
             
@@ -1479,12 +1481,12 @@
             closeMealModal();
             renderWeekPlan();
         }
-
+ 
         function changeWeek(direction) {
             currentWeekOffset += direction;
             renderWeekPlan();
         }
-
+ 
         function copyWeek() {
             const fromWeekKey = prompt('Zkopírovat Z kterého týdne?\n\n0 = tento týden\n-1 = minulý týden\n1 = příští týden\n-2 = před 2 týdny\natd.', currentWeekOffset);
             
@@ -1510,7 +1512,7 @@
                 alert('V daném týdnu není žádný jídelníček');
             }
         }
-
+ 
         function setSpecialDay(weekKey, dayIndex) {
             const currentSpecial = specialDays[weekKey]?.[dayIndex];
             
@@ -1564,16 +1566,16 @@
             saveData();
             renderWeekPlan();
         }
-
+ 
         function closeMealModal() {
             document.getElementById('mealModal').classList.remove('active');
         }
-
+ 
         // ===== RECEPTY =====
         function renderRecipes() {
             const grid = document.getElementById('recipeGrid');
             grid.innerHTML = '';
-
+ 
             recipes.forEach(recipe => {
                 const card = document.createElement('div');
                 card.className = 'recipe-card';
@@ -1606,7 +1608,7 @@
                 grid.appendChild(card);
             });
         }
-
+ 
         function openAddRecipeModal() {
             currentEditingRecipeId = null;
             document.getElementById('recipeModal').classList.add('active');
@@ -1621,16 +1623,16 @@
                 document.getElementById(id).addEventListener('change', updateBatchCookingVisibility);
             });
         }
-
+ 
         function openAddRecipeModalFromPlanner() {
             closeMealModal();
             openAddRecipeModal();
         }
-
+ 
         function closeRecipeModal() {
             document.getElementById('recipeModal').classList.remove('active');
         }
-
+ 
         function editRecipe(recipeId) {
             currentEditingRecipeId = recipeId;
             const recipe = recipes.find(r => r.id === recipeId);
@@ -1683,6 +1685,8 @@
                             <option value="l" ${ri.unit === 'l' ? 'selected' : ''}>l</option>
                             <option value="ks" ${ri.unit === 'ks' ? 'selected' : ''}>ks</option>
                             <option value="hrneček">hrneček (~250ml)</option>
+                            <option value="lžíce">lžíce (~15ml)</option>
+                            <option value="lžička">lžička (~5ml)</option>
                         </select>
                         <button type="button" onclick="this.parentElement.remove()">✕</button>
                     `;
@@ -1704,7 +1708,7 @@
             updateBatchCookingVisibility();
             document.getElementById('recipeModal').classList.add('active');
         }
-
+ 
         function deleteRecipe(recipeId) {
             if (!confirm('Smazat tento recept?')) return;
             
@@ -1720,7 +1724,7 @@
             renderRecipes();
             renderWeekPlan();
         }
-
+ 
         function saveRecipe(event) {
             event.preventDefault();
             
@@ -1803,7 +1807,7 @@
                 selectMeal(currentMealSlot.dayIndex, currentMealSlot.mealType);
             }
         }
-
+ 
         function addRecipeIngredientField() {
             const list = document.getElementById('ingredientsList');
             const div = document.createElement('div');
@@ -1828,12 +1832,14 @@
                     <option value="l">l</option>
                     <option value="ks">ks</option>
                             <option value="hrneček">hrneček (~250ml)</option>
+                            <option value="lžíce">lžíce (~15ml)</option>
+                            <option value="lžička">lžička (~5ml)</option>
                 </select>
                 <button type="button" onclick="this.parentElement.remove()">✕</button>
             `;
             list.appendChild(div);
         }
-
+ 
         function handleIngredientSelection(selectElement) {
             if (selectElement.value === '__new__') {
                 // Otevřít modal pro přidání nové suroviny
@@ -1887,7 +1893,7 @@
                 };
             }
         }
-
+ 
         function updateBatchCookingVisibility() {
             const snidaneChecked = document.getElementById('categorySnidane').checked;
             const group = document.getElementById('savingOptionsGroup');
@@ -1904,17 +1910,17 @@
                 group.style.display = 'block';
             }
         }
-
+ 
         // ===== SUROVINY =====
         function renderIngredients() {
             const grid = document.getElementById('ingredientsGrid');
             grid.innerHTML = '';
-
+ 
             if (ingredients.length === 0) {
                 grid.innerHTML = '<p style="color: var(--text-secondary); text-align: center; padding: 40px;">Zatím nemáte suroviny. Přidejte první surovinu.</p>';
                 return;
             }
-
+ 
             ingredients.sort((a, b) => a.name.localeCompare(b.name)).forEach(ingredient => {
                 // Najít recepty které používají tuto surovinu
                 const usedInRecipes = [];
@@ -1938,7 +1944,7 @@
                     ${usedInRecipes.length > 0 ? `
                         <div style="margin-top: 10px; padding: 10px; background: var(--bg-tertiary); border-radius: 8px; border: 1px solid var(--border);">
                             <small style="color: var(--text-secondary);">Používá se v:</small><br>
-                            <small style="color: var(--accent-orange);">${usedInRecipes.join(', ')}</small>
+                            <small style="color: var(--accent-blue);">${usedInRecipes.join(', ')}</small>
                         </div>
                     ` : ''}
                     <div style="margin-top: 10px;">
@@ -1952,23 +1958,23 @@
                 grid.appendChild(card);
             });
         }
-
+ 
         function openAddIngredientModal() {
             currentEditingIngredientId = null;
             document.getElementById('ingredientModal').classList.add('active');
             document.getElementById('ingredientForm').reset();
             document.getElementById('ingredientModalTitle').textContent = 'Přidat surovinu';
         }
-
+ 
         function setQuantity(quantity, unit) {
             document.getElementById('ingredientQuantity').value = quantity;
             document.getElementById('ingredientUnit').value = unit;
         }
-
+ 
         function closeIngredientModal() {
             document.getElementById('ingredientModal').classList.remove('active');
         }
-
+ 
         function editIngredient(ingredientId) {
             currentEditingIngredientId = ingredientId;
             const ingredient = ingredients.find(i => i.id === ingredientId);
@@ -1995,14 +2001,14 @@
             document.getElementById('ingredientModalTitle').textContent = 'Upravit surovinu';
             document.getElementById('ingredientModal').classList.add('active');
         }
-
+ 
         function deleteIngredient(ingredientId) {
             if (!confirm('Smazat tuto surovinu?')) return;
             ingredients = ingredients.filter(i => i.id !== ingredientId);
             saveData();
             renderIngredients();
         }
-
+ 
         function saveIngredient(event) {
             event.preventDefault();
             
@@ -2034,7 +2040,7 @@
             closeIngredientModal();
             renderIngredients();
         }
-
+ 
         function addIngredientFromRecipe(button) {
             const input = button.parentElement.querySelector('.recipe-ingredient-input');
             const text = input.value.trim();
@@ -2055,7 +2061,7 @@
             closeRecipeModal();
             openAddIngredientModal();
         }
-
+ 
         function findIngredientMatch(ingredientText) {
             const text = ingredientText.toLowerCase();
             let bestMatch = null;
@@ -2074,7 +2080,7 @@
             
             return bestMatch;
         }
-
+ 
         function extractQuantity(ingredientText) {
             const patterns = [
                 /(\d+(?:[.,]\d+)?)\s*g/i,
@@ -2082,7 +2088,9 @@
                 /(\d+(?:[.,]\d+)?)\s*ml/i,
                 /(\d+(?:[.,]\d+)?)\s*l/i,
                 /(\d+(?:[.,]\d+)?)\s*ks/i,
-                /(\d+(?:[.,]\d+)?)\s*hrn[eě](?:ček|čky|čků)?/i  // hrneček, hrnečky, hrnečků
+                /(\d+(?:[.,]\d+)?)\s*hrn[eě](?:ček|čky|čků)?/i,  // hrneček, hrnečky, hrnečků
+                /(\d+(?:[.,]\d+)?)\s*lž[ií]ce?/i,  // lžíce
+                /(\d+(?:[.,]\d+)?)\s*lž[ií](?:čka|čky|ček)?/i  // lžička, lžičky, lžiček
             ];
             
             for (const pattern of patterns) {
@@ -2093,13 +2101,15 @@
                     if (ingredientText.match(/kg/i)) value *= 1000;
                     if (ingredientText.match(/\bl\b/i)) value *= 1000;
                     if (ingredientText.match(/hrn[eě]/i)) value *= 250; // hrneček = ~250ml
+                    if (ingredientText.match(/lž[ií]ce/i)) value *= 15; // lžíce = ~15ml
+                    if (ingredientText.match(/lž[ií](?:čka|čky|ček)/i)) value *= 5; // lžička = ~5ml
                     return value;
                 }
             }
             
             return 0;
         }
-
+ 
         function calculateRecipePrice() {
             const ingredientRows = document.querySelectorAll('#ingredientsList .ingredient-item');
             let totalPrice = 0;
@@ -2135,6 +2145,8 @@
                 if (unit === 'kg') normalizedQuantity *= 1000;
                 if (unit === 'l') normalizedQuantity *= 1000;
                 if (unit === 'hrneček') normalizedQuantity *= 250; // hrneček = ~250ml
+                if (unit === 'lžíce') normalizedQuantity *= 15; // lžíce = ~15ml
+                if (unit === 'lžička') normalizedQuantity *= 5; // lžička = ~5ml
                 
                 if (normalizedIngredientUnit > 0 && normalizedQuantity > 0) {
                     const ratio = normalizedQuantity / normalizedIngredientUnit;
@@ -2150,7 +2162,7 @@
             
             document.getElementById('recipePrice').value = Math.round(totalPrice);
         }
-
+ 
         // Automatický přepočet všech receptů při změně ceny suroviny
         function recalculateAllRecipePrices() {
             recipes.forEach(recipe => {
@@ -2168,6 +2180,12 @@
                             }
                             if (ri.unit === 'hrneček') {
                                 normalizedQuantity *= 250; // hrneček = ~250ml
+                            }
+                            if (ri.unit === 'lžíce') {
+                                normalizedQuantity *= 15; // lžíce = ~15ml
+                            }
+                            if (ri.unit === 'lžička') {
+                                normalizedQuantity *= 5; // lžička = ~5ml
                             }
                             
                             const normalizedIngredientUnit = extractQuantity(ingredient.unit);
@@ -2190,7 +2208,7 @@
             renderWeekPlan();
             updateBudget();
         }
-
+ 
         // ===== NÁKUPNÍ SEZNAM =====
         function generateShoppingList() {
             const weekKey = getWeekKey(currentWeekOffset);
@@ -2240,7 +2258,7 @@
             switchTab('shopping');
             document.querySelectorAll('.tab')[3].click();
         }
-
+ 
         function renderShoppingList() {
             const container = document.getElementById('shoppingList');
             
@@ -2279,7 +2297,7 @@
             
             container.innerHTML = html;
         }
-
+ 
         function toggleShoppingItem(index) {
             shoppingList[index].checked = !shoppingList[index].checked;
             saveData();
@@ -2289,7 +2307,7 @@
                 generateCheckedList();
             }
         }
-
+ 
         function generateCheckedList() {
             const checkedSection = document.getElementById('checkedItemsList');
             const checkedContainer = document.getElementById('checkedItems');
@@ -2321,7 +2339,7 @@
             checkedContainer.innerHTML = html;
             checkedSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
-
+ 
         function toggleHistory() {
             const historySection = document.getElementById('shoppingHistory');
             
@@ -2332,7 +2350,7 @@
                 historySection.style.display = 'none';
             }
         }
-
+ 
         function renderHistory() {
             const container = document.getElementById('historyList');
             
@@ -2348,7 +2366,7 @@
                     <div class="shopping-list" style="margin-bottom: 15px; cursor: pointer; background: var(--bg-tertiary); padding: 15px; border-radius: 8px; border: 1px solid var(--border);" onclick="loadHistoryList(${index})">
                         <div style="display: flex; justify-content: space-between; align-items: center;">
                             <div>
-                                <strong style="color: var(--accent-orange);">${entry.dateLabel}</strong><br>
+                                <strong style="color: var(--accent-blue);">${entry.dateLabel}</strong><br>
                                 <small style="color: var(--text-secondary);">${itemCount} položek</small>
                             </div>
                             <button class="btn btn-primary btn-small" onclick="event.stopPropagation(); loadHistoryList(${index})">Načíst</button>
@@ -2359,7 +2377,7 @@
             
             container.innerHTML = html;
         }
-
+ 
         function loadHistoryList(index) {
             const entry = shoppingHistory[index];
             
@@ -2371,13 +2389,13 @@
                 document.getElementById('shoppingHistory').style.display = 'none';
             }
         }
-
+ 
         // ===== STATISTIKY =====
         function renderStats() {
             let totalCalories = 0, totalProtein = 0, totalCarbs = 0, totalFat = 0;
             let totalPrice = 0, mealCount = 0, leftoverCount = 0;
             const usedRecipes = new Set();
-
+ 
             Object.entries(weekPlan).forEach(([mealKey, recipeId]) => {
                 const recipe = recipes.find(r => r.id === recipeId);
                 if (recipe) {
@@ -2395,9 +2413,9 @@
                     }
                 }
             });
-
+ 
             const budgetStatus = totalPrice <= weeklyBudget.max ? 'success' : 'danger';
-
+ 
             const statsGrid = document.getElementById('statsGrid');
             statsGrid.innerHTML = `
                 <div class="stat-card">
@@ -2417,11 +2435,11 @@
                     <p>Celkové kalorie</p>
                 </div>
             `;
-
+ 
             const nutritionBars = document.getElementById('nutritionBars');
             const dailyProtein = 150, dailyCarbs = 500, dailyFat = 140;
             const avgProtein = totalProtein / 7, avgCarbs = totalCarbs / 7, avgFat = totalFat / 7;
-
+ 
             nutritionBars.innerHTML = `
                 <div class="nutrition-bar">
                     <div class="nutrition-bar-header">
@@ -2458,9 +2476,10 @@
                 </div>
             `;
         }
-
+ 
         // Spuštění
         init();
     </script>
 </body>
 </html>
+ 
