@@ -1,0 +1,1908 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jídelníček - Tmavý režim</title>
+    <style>
+        :root {
+            --bg-primary: #1a1a1a;
+            --bg-secondary: #242424;
+            --bg-tertiary: #2d2d2d;
+            --bg-card: #1f1f1f;
+            --text-primary: #e0e0e0;
+            --text-secondary: #a0a0a0;
+            --text-muted: #707070;
+            --accent-orange: #ff8c42;
+            --accent-orange-hover: #ff9d5c;
+            --accent-orange-light: rgba(255, 140, 66, 0.1);
+            --success: #4ade80;
+            --success-dark: #22c55e;
+            --warning: #fbbf24;
+            --danger: #ef4444;
+            --border: #333;
+            --border-light: #404040;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        .header {
+            background: linear-gradient(135deg, #ff8c42 0%, #ff6b35 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            opacity: 0.95;
+            font-size: 1.1em;
+        }
+
+        .budget-banner {
+            background: var(--bg-tertiary);
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .budget-banner.success {
+            border-left: 4px solid var(--success);
+        }
+
+        .budget-banner.warning {
+            border-left: 4px solid var(--warning);
+        }
+
+        .budget-banner.danger {
+            border-left: 4px solid var(--danger);
+        }
+
+        .budget-info h3 {
+            font-size: 1.8em;
+            margin-bottom: 5px;
+            color: var(--accent-orange);
+        }
+
+        .budget-info p {
+            color: var(--text-secondary);
+        }
+
+        .budget-progress {
+            flex: 1;
+            max-width: 400px;
+            min-width: 200px;
+        }
+
+        .budget-bar {
+            background: var(--bg-card);
+            height: 20px;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 5px;
+            border: 1px solid var(--border);
+        }
+
+        .budget-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-orange) 0%, var(--accent-orange-hover) 100%);
+            transition: width 0.5s;
+        }
+
+        .tabs {
+            display: flex;
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border);
+            overflow-x: auto;
+        }
+
+        .tab {
+            flex: 1;
+            min-width: 100px;
+            padding: 18px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+            border: none;
+            background: none;
+            font-size: 0.95em;
+            color: var(--text-secondary);
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab:hover {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+
+        .tab.active {
+            background: var(--bg-secondary);
+            color: var(--accent-orange);
+            border-bottom-color: var(--accent-orange);
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .week-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .day-card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid var(--border);
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .day-card:hover {
+            border-color: var(--accent-orange);
+            box-shadow: 0 8px 24px rgba(255, 140, 66, 0.15);
+        }
+
+        .day-card h3 {
+            color: var(--accent-orange);
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .day-cost {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: var(--success);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9em;
+        }
+
+        .meal-slot {
+            background: var(--bg-tertiary);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            border: 1px solid var(--border);
+        }
+
+        .meal-slot:hover {
+            background: var(--accent-orange-light);
+            border-color: var(--accent-orange);
+        }
+
+        .meal-slot.empty {
+            border: 2px dashed var(--border-light);
+            color: var(--text-muted);
+            text-align: center;
+        }
+
+        .meal-slot.empty:hover {
+            border-color: var(--accent-orange);
+            color: var(--text-secondary);
+        }
+
+        .meal-slot.is-leftover {
+            border-left: 4px solid var(--success);
+            background: rgba(74, 222, 128, 0.1);
+        }
+
+        .meal-slot h4 {
+            font-size: 0.9em;
+            color: var(--text-muted);
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .meal-slot p {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .meal-slot .nutrition {
+            font-size: 0.85em;
+            margin-top: 8px;
+            color: var(--text-secondary);
+        }
+
+        .leftover-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--success);
+            color: white;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.75em;
+            font-weight: 600;
+        }
+
+        .batch-badge {
+            display: inline-block;
+            background: var(--accent-orange);
+            color: white;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.75em;
+            font-weight: 600;
+            margin-top: 5px;
+        }
+
+        .recipe-grid, .ingredients-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .recipe-card, .ingredient-card {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 1px solid var(--border);
+            position: relative;
+        }
+
+        .recipe-card:hover, .ingredient-card:hover {
+            border-color: var(--accent-orange);
+            box-shadow: 0 8px 24px rgba(255, 140, 66, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .recipe-card.batch-cooking {
+            border-left: 4px solid var(--accent-orange);
+        }
+
+        .recipe-card.good-for-leftovers {
+            border-left: 4px solid var(--success);
+        }
+
+        .recipe-card h3, .ingredient-card h3 {
+            color: var(--accent-orange);
+            margin-bottom: 10px;
+        }
+
+        .recipe-card .meta, .ingredient-card .meta {
+            display: flex;
+            gap: 15px;
+            font-size: 0.9em;
+            color: var(--text-secondary);
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        .recipe-tags {
+            display: flex;
+            gap: 5px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+
+        .recipe-tag {
+            background: var(--accent-orange);
+            color: white;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 0.75em;
+        }
+
+        .recipe-tag.leftover {
+            background: var(--success);
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: var(--accent-orange);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-orange-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255, 140, 66, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-card);
+            border-color: var(--accent-orange);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: var(--success-dark);
+        }
+
+        .btn-small {
+            padding: 8px 20px;
+            font-size: 0.9em;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            padding: 30px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: slideUp 0.3s;
+            border: 1px solid var(--border);
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h2 {
+            color: var(--accent-orange);
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 2em;
+            cursor: pointer;
+            color: var(--text-secondary);
+            line-height: 1;
+            transition: color 0.3s;
+        }
+
+        .close-btn:hover {
+            color: var(--accent-orange);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+            background: var(--bg-card);
+            color: var(--text-primary);
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--accent-orange);
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .form-group input.found {
+            border-color: var(--success);
+        }
+
+        .form-group input.not-found {
+            border-color: var(--warning);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .ingredient-list {
+            margin-top: 10px;
+        }
+
+        .ingredient-item {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+
+        .ingredient-item input {
+            flex: 1;
+        }
+
+        .ingredient-item button {
+            padding: 8px 15px;
+            background: var(--danger);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .ingredient-item .btn-add {
+            background: var(--success);
+        }
+
+        .shopping-list {
+            background: var(--bg-card);
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid var(--border);
+        }
+
+        .shopping-category {
+            margin-bottom: 20px;
+        }
+
+        .shopping-category h3 {
+            color: var(--accent-orange);
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+
+        .shopping-item {
+            background: var(--bg-tertiary);
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid var(--border);
+        }
+
+        .shopping-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+
+        .shopping-item.checked {
+            opacity: 0.5;
+            text-decoration: line-through;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .stat-card {
+            background: var(--bg-card);
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid var(--border);
+        }
+
+        .stat-card h3 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            color: var(--accent-orange);
+        }
+
+        .stat-card p {
+            color: var(--text-secondary);
+        }
+
+        .stat-card.success {
+            border-color: var(--success);
+        }
+
+        .stat-card.success h3 {
+            color: var(--success);
+        }
+
+        .stat-card.danger {
+            border-color: var(--danger);
+        }
+
+        .stat-card.danger h3 {
+            color: var(--danger);
+        }
+
+        .nutrition-bars {
+            margin-top: 20px;
+        }
+
+        .nutrition-bar {
+            margin-bottom: 15px;
+        }
+
+        .nutrition-bar-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .nutrition-bar-fill {
+            background: var(--bg-card);
+            height: 30px;
+            border-radius: 15px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        .nutrition-bar-progress {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-orange) 0%, var(--accent-orange-hover) 100%);
+            transition: width 0.5s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+
+        .leftover-option {
+            background: rgba(74, 222, 128, 0.1);
+            border: 2px solid var(--success);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .leftover-option:hover {
+            background: rgba(74, 222, 128, 0.15);
+            box-shadow: 0 5px 15px rgba(74, 222, 128, 0.2);
+        }
+
+        .leftover-option label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+
+        .rohlik-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            background: #00a651;
+            color: white;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.75em;
+            font-weight: 600;
+        }
+
+        .info-box {
+            background: var(--bg-card);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+            border-left: 4px solid var(--accent-orange);
+        }
+
+        .info-box p {
+            color: var(--text-secondary);
+            margin: 0;
+        }
+
+        @media (max-width: 768px) {
+            .budget-banner {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .week-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-card);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-light);
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-orange);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🍽️ Jídelníček na týden</h1>
+            <p>Úsporný režim • Databáze surovin • Rohlík.cz</p>
+        </div>
+
+        <div class="budget-banner" id="budgetBanner">
+            <div class="budget-info">
+                <h3 id="weeklySpent">0 Kč</h3>
+                <p>Týdenní náklady</p>
+            </div>
+            <div class="budget-progress">
+                <div class="budget-bar">
+                    <div class="budget-bar-fill" id="budgetBar"></div>
+                </div>
+                <p style="text-align: center; font-size: 0.9em; color: var(--text-secondary);">Rozpočet: 1500-2000 Kč</p>
+            </div>
+            <div class="budget-info" style="text-align: right;">
+                <h3 id="budgetRemaining">1750 Kč</h3>
+                <p>Zbývá</p>
+            </div>
+        </div>
+
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('planner')">📅 Plánovač</button>
+            <button class="tab" onclick="switchTab('recipes')">📖 Recepty</button>
+            <button class="tab" onclick="switchTab('ingredients')">🥕 Suroviny</button>
+            <button class="tab" onclick="switchTab('shopping')">🛒 Nákup</button>
+            <button class="tab" onclick="switchTab('stats')">📊 Statistiky</button>
+        </div>
+
+        <div class="content">
+            <div id="planner" class="tab-content active">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
+                    <h2>Týdenní jídelníček</h2>
+                    <button class="btn btn-success btn-small" onclick="generateShoppingList()">🛒 Generovat nákupní seznam</button>
+                </div>
+                <div id="weekGrid" class="week-grid"></div>
+            </div>
+
+            <div id="recipes" class="tab-content">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
+                    <h2>Databáze receptů</h2>
+                    <button class="btn btn-primary btn-small" onclick="openAddRecipeModal()">+ Přidat recept</button>
+                </div>
+                <div id="recipeGrid" class="recipe-grid"></div>
+            </div>
+
+            <div id="ingredients" class="tab-content">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
+                    <h2>Databáze surovin</h2>
+                    <button class="btn btn-primary btn-small" onclick="openAddIngredientModal()">+ Přidat surovinu</button>
+                </div>
+                <div class="info-box">
+                    <p>💡 Zde spravujete centrální databázi surovin s cenami z Rohlíku. Při přidávání ingrediencí do receptů se automaticky propojí s touto databází a ceny se vypočítají.</p>
+                </div>
+                <div id="ingredientsGrid" class="ingredients-grid"></div>
+            </div>
+
+            <div id="shopping" class="tab-content">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 10px;">
+                    <h2>Nákupní seznam</h2>
+                    <div class="btn-group">
+                        <button class="btn btn-secondary btn-small" onclick="toggleHistory()">📜 Historie</button>
+                        <button class="btn btn-secondary btn-small" onclick="generateCheckedList()">📋 Nakliknuté</button>
+                    </div>
+                </div>
+                
+                <div id="shoppingHistory" style="margin-bottom: 30px; display: none;">
+                    <h3 style="color: var(--accent-orange); margin-bottom: 15px;">📜 Historie nákupních seznamů</h3>
+                    <div id="historyList"></div>
+                </div>
+                
+                <div id="shoppingList" class="shopping-list"></div>
+                
+                <div id="checkedItemsList" style="margin-top: 30px; display: none;">
+                    <h3 style="color: var(--accent-orange); margin-bottom: 15px;">✓ Nakliknuté položky</h3>
+                    <div id="checkedItems" class="shopping-list"></div>
+                </div>
+            </div>
+
+            <div id="stats" class="tab-content">
+                <h2>Týdenní statistiky</h2>
+                <div id="statsGrid" class="stats-grid"></div>
+                <div id="nutritionBars" class="nutrition-bars"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal pro výběr jídla -->
+    <div id="mealModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Vyberte jídlo</h2>
+                <button class="close-btn" onclick="closeMealModal()">&times;</button>
+            </div>
+            <div id="mealModalContent"></div>
+        </div>
+    </div>
+
+    <!-- Modal pro přidání/úpravu receptu -->
+    <div id="recipeModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="recipeModalTitle">Přidat recept</h2>
+                <button class="close-btn" onclick="closeRecipeModal()">&times;</button>
+            </div>
+            <form id="recipeForm" onsubmit="saveRecipe(event)">
+                <div class="form-group">
+                    <label>Název jídla *</label>
+                    <input type="text" id="recipeName" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Kategorie *</label>
+                        <select id="recipeCategory" required onchange="updateBatchCookingVisibility()">
+                            <option value="snidane">Snídaně</option>
+                            <option value="obed">Oběd</option>
+                            <option value="vecere">Večeře</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Počet porcí *</label>
+                        <input type="number" id="recipePortions" min="1" value="2" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Celková cena (Kč)</label>
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <input type="number" id="recipePrice" readonly style="background: var(--bg-tertiary);">
+                            <button type="button" class="btn btn-secondary btn-small" onclick="calculateRecipePrice()">🔄</button>
+                        </div>
+                        <small style="color: var(--text-muted);">Vypočítá se ze surovin</small>
+                    </div>
+                    <div class="form-group">
+                        <label>Kalorie/porce *</label>
+                        <input type="number" id="recipeCalories" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Bílkoviny/porce (g) *</label>
+                        <input type="number" id="recipeProtein" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Sacharidy/porce (g) *</label>
+                        <input type="number" id="recipeCarbs" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Tuky/porce (g) *</label>
+                    <input type="number" id="recipeFat" required>
+                </div>
+                
+                <div class="form-group" id="savingOptionsGroup">
+                    <label>Možnosti úspory</label>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="batchCooking">
+                        <label for="batchCooking">Hodí se vařit na víc porcí</label>
+                    </div>
+                    <div class="checkbox-group">
+                        <input type="checkbox" id="goodForLeftovers">
+                        <label for="goodForLeftovers">Dobré na zbytky</label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Ingredience *</label>
+                    <small style="color: var(--text-secondary); display: block; margin-bottom: 10px;">
+                        💡 Zelená = v databázi | Žlutá = chybí (klikněte +)
+                    </small>
+                    <div id="ingredientsList" class="ingredient-list"></div>
+                    <button type="button" class="btn btn-secondary btn-small" onclick="addRecipeIngredientField()">+ Ingredience</button>
+                </div>
+
+                <div class="form-group">
+                    <label>Postup přípravy</label>
+                    <textarea id="recipeInstructions"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Uložit recept</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal pro přidání/úpravu suroviny -->
+    <div id="ingredientModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="ingredientModalTitle">Přidat surovinu</h2>
+                <button class="close-btn" onclick="closeIngredientModal()">&times;</button>
+            </div>
+            <form id="ingredientForm" onsubmit="saveIngredient(event)">
+                <div class="form-group">
+                    <label>Název suroviny *</label>
+                    <input type="text" id="ingredientName" placeholder="kuřecí prsíčka" required>
+                    <small style="color: var(--text-muted);">Základní název bez množství</small>
+                </div>
+                
+                <div class="form-group">
+                    <label>Rohlík.cz odkaz *</label>
+                    <input type="url" id="ingredientRohlikUrl" placeholder="https://www.rohlik.cz/..." required>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Cena (Kč) *</label>
+                        <input type="number" step="0.01" id="ingredientPrice" placeholder="89.90" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Množství v balení *</label>
+                        <input type="text" id="ingredientUnit" placeholder="500g" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label>Poznámka</label>
+                    <input type="text" id="ingredientNote" placeholder="BIO, akce...">
+                </div>
+                
+                <button type="submit" class="btn btn-primary">Uložit surovinu</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Globální proměnné
+        let recipes = [];
+        let weekPlan = {};
+        let shoppingList = [];
+        let shoppingHistory = [];
+        let ingredients = [];
+        let currentMealSlot = null;
+        let leftovers = {};
+        let currentEditingRecipeId = null;
+        let currentEditingIngredientId = null;
+        const weeklyBudget = { min: 1500, max: 2000, target: 1750 };
+
+        const daysOfWeek = ['Pondělí', 'Úterý', 'Středa', 'Čtvrtek', 'Pátek', 'Sobota', 'Neděle'];
+        const mealTypes = { snidane: 'Snídaně', obed: 'Oběd', vecere: 'Večeře' };
+
+        // Inicializace
+        async function init() {
+            await loadData();
+            addDefaultRecipes();
+            renderWeekPlan();
+            renderRecipes();
+            renderIngredients();
+            renderShoppingList();
+            updateBudget();
+            renderStats();
+        }
+
+        // Načtení dat
+        async function loadData() {
+            try {
+                const data = await Promise.all([
+                    window.storage.get('recipes_final', true),
+                    window.storage.get('weekPlan_final', true),
+                    window.storage.get('shoppingList', true),
+                    window.storage.get('shoppingHistory', true),
+                    window.storage.get('ingredients', true),
+                    window.storage.get('leftovers', true)
+                ]);
+
+                if (data[0]) recipes = JSON.parse(data[0].value);
+                if (data[1]) weekPlan = JSON.parse(data[1].value);
+                if (data[2]) shoppingList = JSON.parse(data[2].value);
+                if (data[3]) shoppingHistory = JSON.parse(data[3].value);
+                if (data[4]) ingredients = JSON.parse(data[4].value);
+                if (data[5]) leftovers = JSON.parse(data[5].value);
+            } catch (error) {
+                console.log('Načítám nová data...');
+            }
+        }
+
+        // Uložení dat
+        async function saveData() {
+            try {
+                await Promise.all([
+                    window.storage.set('recipes_final', JSON.stringify(recipes), true),
+                    window.storage.set('weekPlan_final', JSON.stringify(weekPlan), true),
+                    window.storage.set('shoppingList', JSON.stringify(shoppingList), true),
+                    window.storage.set('shoppingHistory', JSON.stringify(shoppingHistory), true),
+                    window.storage.set('ingredients', JSON.stringify(ingredients), true),
+                    window.storage.set('leftovers', JSON.stringify(leftovers), true)
+                ]);
+            } catch (error) {
+                console.error('Chyba při ukládání:', error);
+            }
+        }
+
+        // Výchozí recepty
+        function addDefaultRecipes() {
+            if (recipes.length === 0) {
+                recipes = [
+                    { id: '1', name: 'Ovesná kaše s ovocem', category: 'snidane', price: 35, calories: 350, protein: 12, carbs: 55, fat: 8, portions: 2, batchCooking: false, goodForLeftovers: false, ingredients: ['100g ovesné vločky', '250ml mléko', 'banán', 'med'], instructions: 'Uvařte vločky v mléku, přidejte nakrájený banán a med.' },
+                    { id: '2', name: 'Kuřecí se zeleninou', category: 'obed', price: 120, calories: 450, protein: 45, carbs: 30, fat: 15, portions: 2, batchCooking: true, goodForLeftovers: true, ingredients: ['200g kuřecí prsíčka', 'brokolice', 'mrkev', '100g rýže'], instructions: 'Opečte kuřecí maso, přidejte zeleninu a podávejte s rýží.' },
+                    { id: '3', name: 'Guláš', category: 'obed', price: 180, calories: 520, protein: 38, carbs: 45, fat: 22, portions: 4, batchCooking: true, goodForLeftovers: true, ingredients: ['500g hovězí maso', 'cibule', 'paprika', 'rajčata'], instructions: 'Udusíte maso s cibulí, přidejte papriku a rajčata, duste 2 hodiny.' }
+                ];
+                saveData();
+            }
+        }
+
+        // Přepínání záložek
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById(tabName).classList.add('active');
+
+            if (tabName === 'stats') renderStats();
+            if (tabName === 'ingredients') renderIngredients();
+        }
+
+        // Aktualizace rozpočtu
+        function updateBudget() {
+            let totalSpent = 0;
+            const usedRecipes = new Set();
+
+            Object.entries(weekPlan).forEach(([mealKey, recipeId]) => {
+                if (!leftovers[mealKey] && !usedRecipes.has(recipeId)) {
+                    const recipe = recipes.find(r => r.id === recipeId);
+                    if (recipe) {
+                        totalSpent += recipe.price || 0;
+                        usedRecipes.add(recipeId);
+                    }
+                }
+            });
+
+            const remaining = weeklyBudget.target - totalSpent;
+            const percentage = (totalSpent / weeklyBudget.max) * 100;
+
+            document.getElementById('weeklySpent').textContent = `${totalSpent} Kč`;
+            document.getElementById('budgetRemaining').textContent = `${remaining} Kč`;
+            document.getElementById('budgetBar').style.width = `${Math.min(percentage, 100)}%`;
+
+            const banner = document.getElementById('budgetBanner');
+            banner.className = 'budget-banner';
+            
+            if (totalSpent > weeklyBudget.max) {
+                banner.classList.add('danger');
+            } else if (totalSpent > weeklyBudget.target) {
+                banner.classList.add('warning');
+            } else {
+                banner.classList.add('success');
+            }
+        }
+
+        // ===== PLÁNOVAČ =====
+        function renderWeekPlan() {
+            const grid = document.getElementById('weekGrid');
+            grid.innerHTML = '';
+
+            daysOfWeek.forEach((day, dayIndex) => {
+                const dayCard = document.createElement('div');
+                dayCard.className = 'day-card';
+                
+                let dayCost = 0;
+                Object.keys(mealTypes).forEach(mealType => {
+                    const mealKey = `${dayIndex}-${mealType}`;
+                    if (weekPlan[mealKey] && !leftovers[mealKey]) {
+                        const recipe = recipes.find(r => r.id === weekPlan[mealKey]);
+                        if (recipe) dayCost += recipe.price || 0;
+                    }
+                });
+                
+                let html = `<h3>${day}</h3>`;
+                if (dayCost > 0) html += `<div class="day-cost">${dayCost} Kč</div>`;
+                
+                Object.keys(mealTypes).forEach(mealType => {
+                    const mealKey = `${dayIndex}-${mealType}`;
+                    const meal = weekPlan[mealKey];
+                    const isLeftover = leftovers[mealKey];
+                    
+                    if (meal) {
+                        const recipe = recipes.find(r => r.id === meal);
+                        if (recipe) {
+                            const leftoverClass = isLeftover ? 'is-leftover' : '';
+                            html += `
+                                <div class="meal-slot ${leftoverClass}" onclick="selectMeal(${dayIndex}, '${mealType}')">
+                                    <h4>${mealTypes[mealType]}</h4>
+                                    <p>${recipe.name}</p>
+                                    ${isLeftover ? '<span class="leftover-badge">♻️</span>' : ''}
+                                    ${!isLeftover && recipe.portions > 2 ? `<span class="batch-badge">${recipe.portions} porcí</span>` : ''}
+                                    <div class="nutrition">
+                                        ${recipe.calories} kcal | ${recipe.protein}g B | ${recipe.carbs}g S | ${recipe.fat}g T
+                                    </div>
+                                </div>
+                            `;
+                        }
+                    } else {
+                        html += `
+                            <div class="meal-slot empty" onclick="selectMeal(${dayIndex}, '${mealType}')">
+                                <h4>${mealTypes[mealType]}</h4>
+                                <p>+ Přidat jídlo</p>
+                            </div>
+                        `;
+                    }
+                });
+                
+                dayCard.innerHTML = html;
+                grid.appendChild(dayCard);
+            });
+
+            updateBudget();
+        }
+
+        function selectMeal(dayIndex, mealType) {
+            currentMealSlot = { dayIndex, mealType };
+            const modal = document.getElementById('mealModal');
+            const content = document.getElementById('mealModalContent');
+            
+            const filteredRecipes = recipes.filter(r => r.category === mealType);
+            
+            let html = '';
+            
+            const currentMealKey = `${dayIndex}-${mealType}`;
+            if (weekPlan[currentMealKey]) {
+                html += `<button class="btn btn-secondary btn-small" onclick="removeMeal()" style="margin-bottom: 20px;">🗑️ Odstranit jídlo</button>`;
+            }
+            
+            html += `<button class="btn btn-primary btn-small" onclick="openAddRecipeModalFromPlanner()" style="margin-bottom: 20px;">+ Nový recept</button>`;
+            
+            if (dayIndex > 0 && mealType !== 'snidane') {
+                html += '<h3 style="margin: 20px 0 15px 0; color: var(--success);">♻️ Použít zbytky</h3>';
+                const prevDay = dayIndex - 1;
+                
+                ['vecere', 'obed'].forEach(prevMealType => {
+                    const prevMealKey = `${prevDay}-${prevMealType}`;
+                    const prevRecipeId = weekPlan[prevMealKey];
+                    
+                    if (prevRecipeId && !leftovers[prevMealKey]) {
+                        const prevRecipe = recipes.find(r => r.id === prevRecipeId);
+                        if (prevRecipe && prevRecipe.goodForLeftovers) {
+                            html += `
+                                <div class="leftover-option" onclick="document.querySelector('input[value=\\'leftover-${prevMealKey}\\']').checked = true;">
+                                    <label>
+                                        <input type="radio" name="mealChoice" value="leftover-${prevMealKey}">
+                                        <div>
+                                            <strong>${prevRecipe.name}</strong><br>
+                                            <small style="color: var(--text-secondary);">z ${daysOfWeek[prevDay]} (${mealTypes[prevMealType]})</small><br>
+                                            <span style="color: var(--success); font-weight: 600;">✓ Úspora ${prevRecipe.price || 0} Kč</span>
+                                        </div>
+                                    </label>
+                                </div>
+                            `;
+                        }
+                    }
+                });
+            }
+            
+            html += '<h3 style="margin: 20px 0 15px 0; color: var(--accent-orange);">🍳 Existující recepty</h3>';
+            html += '<div class="recipe-grid">';
+            filteredRecipes.forEach(recipe => {
+                html += `
+                    <div class="recipe-card" onclick="document.querySelector('input[value=\\'recipe-${recipe.id}\\']').checked = true;">
+                        <label style="cursor: pointer;">
+                            <input type="radio" name="mealChoice" value="recipe-${recipe.id}" style="margin-bottom: 10px;">
+                            <h3>${recipe.name}</h3>
+                        </label>
+                        <div class="meta">
+                            <span>💰 ${recipe.price || 0} Kč</span>
+                            <span>🔥 ${recipe.calories} kcal</span>
+                            <span>👥 ${recipe.portions} porcí</span>
+                        </div>
+                    </div>
+                `;
+            });
+            html += '</div>';
+            
+            if (filteredRecipes.length === 0) {
+                html += '<p style="color: var(--text-secondary);">Žádné recepty v této kategorii.</p>';
+            }
+            
+            html += '<div style="margin-top: 20px; display: flex; gap: 10px;">';
+            html += '<button class="btn btn-primary" onclick="confirmMealSelection()">Potvrdit</button>';
+            html += '<button class="btn btn-secondary" onclick="closeMealModal()">Zrušit</button>';
+            html += '</div>';
+            
+            content.innerHTML = html;
+            modal.classList.add('active');
+        }
+
+        function confirmMealSelection() {
+            const selected = document.querySelector('input[name="mealChoice"]:checked');
+            if (!selected) {
+                alert('Vyberte jídlo');
+                return;
+            }
+            
+            const mealKey = `${currentMealSlot.dayIndex}-${currentMealSlot.mealType}`;
+            const value = selected.value;
+            
+            if (value.startsWith('leftover-')) {
+                const sourceMealKey = value.replace('leftover-', '');
+                const sourceRecipeId = weekPlan[sourceMealKey];
+                weekPlan[mealKey] = sourceRecipeId;
+                leftovers[mealKey] = { recipeId: sourceRecipeId, sourceKey: sourceMealKey };
+            } else if (value.startsWith('recipe-')) {
+                const recipeId = value.replace('recipe-', '');
+                weekPlan[mealKey] = recipeId;
+                if (leftovers[mealKey]) delete leftovers[mealKey];
+            }
+            
+            saveData();
+            closeMealModal();
+            renderWeekPlan();
+        }
+
+        function removeMeal() {
+            const mealKey = `${currentMealSlot.dayIndex}-${currentMealSlot.mealType}`;
+            delete weekPlan[mealKey];
+            if (leftovers[mealKey]) delete leftovers[mealKey];
+            saveData();
+            closeMealModal();
+            renderWeekPlan();
+        }
+
+        function closeMealModal() {
+            document.getElementById('mealModal').classList.remove('active');
+        }
+
+        // ===== RECEPTY =====
+        function renderRecipes() {
+            const grid = document.getElementById('recipeGrid');
+            grid.innerHTML = '';
+
+            recipes.forEach(recipe => {
+                const card = document.createElement('div');
+                card.className = 'recipe-card';
+                
+                if (recipe.batchCooking) card.classList.add('batch-cooking');
+                if (recipe.goodForLeftovers) card.classList.add('good-for-leftovers');
+                
+                card.innerHTML = `
+                    <h3>${recipe.name}</h3>
+                    <p style="color: var(--text-secondary);">${mealTypes[recipe.category]}</p>
+                    <div class="meta">
+                        <span>💰 ${recipe.price || 0} Kč</span>
+                        <span>🔥 ${recipe.calories} kcal</span>
+                        <span>👥 ${recipe.portions} porcí</span>
+                        <span>🥩 ${recipe.protein}g B</span>
+                    </div>
+                    <div class="recipe-tags">
+                        ${recipe.batchCooking ? '<span class="recipe-tag">Batch cooking</span>' : ''}
+                        ${recipe.goodForLeftovers ? '<span class="recipe-tag leftover">Zbytky</span>' : ''}
+                    </div>
+                    <div style="margin-top: 15px; display: flex; gap: 10px;">
+                        <button class="btn btn-primary btn-small" onclick="editRecipe('${recipe.id}')" style="flex: 1;">✏️ Upravit</button>
+                        <button class="btn btn-secondary btn-small" onclick="deleteRecipe('${recipe.id}')">🗑️</button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function openAddRecipeModal() {
+            currentEditingRecipeId = null;
+            document.getElementById('recipeModal').classList.add('active');
+            document.getElementById('recipeForm').reset();
+            document.getElementById('recipeModalTitle').textContent = 'Přidat recept';
+            document.getElementById('ingredientsList').innerHTML = '';
+            addRecipeIngredientField();
+            updateBatchCookingVisibility();
+        }
+
+        function openAddRecipeModalFromPlanner() {
+            closeMealModal();
+            openAddRecipeModal();
+        }
+
+        function closeRecipeModal() {
+            document.getElementById('recipeModal').classList.remove('active');
+        }
+
+        function editRecipe(recipeId) {
+            currentEditingRecipeId = recipeId;
+            const recipe = recipes.find(r => r.id === recipeId);
+            if (!recipe) return;
+            
+            document.getElementById('recipeName').value = recipe.name;
+            document.getElementById('recipeCategory').value = recipe.category;
+            document.getElementById('recipePortions').value = recipe.portions;
+            document.getElementById('recipePrice').value = recipe.price || 0;
+            document.getElementById('recipeCalories').value = recipe.calories;
+            document.getElementById('recipeProtein').value = recipe.protein;
+            document.getElementById('recipeCarbs').value = recipe.carbs;
+            document.getElementById('recipeFat').value = recipe.fat;
+            document.getElementById('batchCooking').checked = recipe.batchCooking;
+            document.getElementById('goodForLeftovers').checked = recipe.goodForLeftovers;
+            document.getElementById('recipeInstructions').value = recipe.instructions || '';
+            
+            const ingredientsList = document.getElementById('ingredientsList');
+            ingredientsList.innerHTML = '';
+            recipe.ingredients.forEach(ingredient => {
+                const div = document.createElement('div');
+                div.className = 'ingredient-item';
+                div.innerHTML = `
+                    <input type="text" class="ingredient-input recipe-ingredient-input" value="${ingredient}" onblur="checkIngredientInDatabase(this)">
+                    <button type="button" class="btn-add" onclick="addIngredientFromRecipe(this)">+</button>
+                    <button type="button" onclick="this.parentElement.remove()">✕</button>
+                `;
+                ingredientsList.appendChild(div);
+                checkIngredientInDatabase(div.querySelector('input'));
+            });
+            
+            document.getElementById('recipeModalTitle').textContent = 'Upravit recept';
+            updateBatchCookingVisibility();
+            document.getElementById('recipeModal').classList.add('active');
+        }
+
+        function deleteRecipe(recipeId) {
+            if (!confirm('Smazat tento recept?')) return;
+            
+            recipes = recipes.filter(r => r.id !== recipeId);
+            Object.keys(weekPlan).forEach(key => {
+                if (weekPlan[key] === recipeId) {
+                    delete weekPlan[key];
+                    if (leftovers[key]) delete leftovers[key];
+                }
+            });
+            
+            saveData();
+            renderRecipes();
+            renderWeekPlan();
+        }
+
+        function saveRecipe(event) {
+            event.preventDefault();
+            
+            const ingredients = Array.from(document.querySelectorAll('.ingredient-input'))
+                .map(input => input.value.trim())
+                .filter(val => val !== '');
+            
+            const recipeData = {
+                name: document.getElementById('recipeName').value,
+                category: document.getElementById('recipeCategory').value,
+                price: parseInt(document.getElementById('recipePrice').value) || 0,
+                calories: parseInt(document.getElementById('recipeCalories').value),
+                protein: parseInt(document.getElementById('recipeProtein').value),
+                carbs: parseInt(document.getElementById('recipeCarbs').value),
+                fat: parseInt(document.getElementById('recipeFat').value),
+                portions: parseInt(document.getElementById('recipePortions').value),
+                batchCooking: document.getElementById('batchCooking').checked,
+                goodForLeftovers: document.getElementById('goodForLeftovers').checked,
+                ingredients: ingredients,
+                instructions: document.getElementById('recipeInstructions').value
+            };
+            
+            if (currentEditingRecipeId) {
+                const index = recipes.findIndex(r => r.id === currentEditingRecipeId);
+                recipes[index] = { ...recipes[index], ...recipeData };
+            } else {
+                recipes.push({ id: Date.now().toString(), ...recipeData });
+            }
+            
+            saveData();
+            closeRecipeModal();
+            renderRecipes();
+            renderWeekPlan();
+            
+            if (currentMealSlot) {
+                selectMeal(currentMealSlot.dayIndex, currentMealSlot.mealType);
+            }
+        }
+
+        function addRecipeIngredientField() {
+            const list = document.getElementById('ingredientsList');
+            const div = document.createElement('div');
+            div.className = 'ingredient-item';
+            div.innerHTML = `
+                <input type="text" placeholder="200g kuřecí prsíčka" class="ingredient-input recipe-ingredient-input" onblur="checkIngredientInDatabase(this)">
+                <button type="button" class="btn-add" onclick="addIngredientFromRecipe(this)">+</button>
+                <button type="button" onclick="this.parentElement.remove()">✕</button>
+            `;
+            list.appendChild(div);
+        }
+
+        function updateBatchCookingVisibility() {
+            const category = document.getElementById('recipeCategory').value;
+            const group = document.getElementById('savingOptionsGroup');
+            
+            if (category === 'snidane') {
+                group.style.display = 'none';
+                document.getElementById('batchCooking').checked = false;
+                document.getElementById('goodForLeftovers').checked = false;
+            } else {
+                group.style.display = 'block';
+            }
+        }
+
+        // ===== SUROVINY =====
+        function renderIngredients() {
+            const grid = document.getElementById('ingredientsGrid');
+            grid.innerHTML = '';
+
+            if (ingredients.length === 0) {
+                grid.innerHTML = '<p style="color: var(--text-secondary); text-align: center; padding: 40px;">Zatím nemáte suroviny. Přidejte první surovinu.</p>';
+                return;
+            }
+
+            ingredients.sort((a, b) => a.name.localeCompare(b.name)).forEach(ingredient => {
+                const card = document.createElement('div');
+                card.className = 'ingredient-card';
+                
+                card.innerHTML = `
+                    <h3>${ingredient.name}</h3>
+                    <p style="color: var(--text-secondary);">${ingredient.unit}</p>
+                    <div class="meta">
+                        <span>💰 ${ingredient.price} Kč</span>
+                        ${ingredient.note ? `<span>📝 ${ingredient.note}</span>` : ''}
+                    </div>
+                    <div style="margin-top: 10px;">
+                        <a href="${ingredient.rohlikUrl}" target="_blank" class="rohlik-badge" style="text-decoration: none; display: inline-block; margin-bottom: 10px;">🛒 Rohlík</a>
+                    </div>
+                    <div style="margin-top: 15px; display: flex; gap: 10px;">
+                        <button class="btn btn-primary btn-small" onclick="editIngredient('${ingredient.id}')" style="flex: 1;">✏️</button>
+                        <button class="btn btn-secondary btn-small" onclick="deleteIngredient('${ingredient.id}')">🗑️</button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function openAddIngredientModal() {
+            currentEditingIngredientId = null;
+            document.getElementById('ingredientModal').classList.add('active');
+            document.getElementById('ingredientForm').reset();
+            document.getElementById('ingredientModalTitle').textContent = 'Přidat surovinu';
+        }
+
+        function closeIngredientModal() {
+            document.getElementById('ingredientModal').classList.remove('active');
+        }
+
+        function editIngredient(ingredientId) {
+            currentEditingIngredientId = ingredientId;
+            const ingredient = ingredients.find(i => i.id === ingredientId);
+            if (!ingredient) return;
+            
+            document.getElementById('ingredientName').value = ingredient.name;
+            document.getElementById('ingredientRohlikUrl').value = ingredient.rohlikUrl;
+            document.getElementById('ingredientPrice').value = ingredient.price;
+            document.getElementById('ingredientUnit').value = ingredient.unit;
+            document.getElementById('ingredientNote').value = ingredient.note || '';
+            
+            document.getElementById('ingredientModalTitle').textContent = 'Upravit surovinu';
+            document.getElementById('ingredientModal').classList.add('active');
+        }
+
+        function deleteIngredient(ingredientId) {
+            if (!confirm('Smazat tuto surovinu?')) return;
+            ingredients = ingredients.filter(i => i.id !== ingredientId);
+            saveData();
+            renderIngredients();
+        }
+
+        function saveIngredient(event) {
+            event.preventDefault();
+            
+            const ingredientData = {
+                name: document.getElementById('ingredientName').value.trim().toLowerCase(),
+                rohlikUrl: document.getElementById('ingredientRohlikUrl').value,
+                price: parseFloat(document.getElementById('ingredientPrice').value),
+                unit: document.getElementById('ingredientUnit').value,
+                note: document.getElementById('ingredientNote').value
+            };
+            
+            if (currentEditingIngredientId) {
+                const index = ingredients.findIndex(i => i.id === currentEditingIngredientId);
+                ingredients[index] = { ...ingredients[index], ...ingredientData };
+            } else {
+                ingredients.push({ id: Date.now().toString(), ...ingredientData });
+            }
+            
+            saveData();
+            closeIngredientModal();
+            renderIngredients();
+        }
+
+        function addIngredientFromRecipe(button) {
+            const input = button.parentElement.querySelector('.recipe-ingredient-input');
+            const text = input.value.trim();
+            
+            if (!text) {
+                alert('Vyplňte ingredienci');
+                return;
+            }
+            
+            const cleanName = text.replace(/\d+\s*(?:g|kg|ml|l|ks)/gi, '').trim();
+            
+            document.getElementById('ingredientName').value = cleanName;
+            const searchQuery = encodeURIComponent(cleanName);
+            document.getElementById('ingredientRohlikUrl').value = `https://www.rohlik.cz/hledat?q=${searchQuery}&companyId=1`;
+            
+            closeMealModal();
+            closeRecipeModal();
+            openAddIngredientModal();
+        }
+
+        function findIngredientMatch(ingredientText) {
+            const text = ingredientText.toLowerCase();
+            let bestMatch = null;
+            let bestScore = 0;
+            
+            ingredients.forEach(ingredient => {
+                const ingredientName = ingredient.name.toLowerCase();
+                if (text.includes(ingredientName)) {
+                    const score = ingredientName.length;
+                    if (score > bestScore) {
+                        bestMatch = ingredient;
+                        bestScore = score;
+                    }
+                }
+            });
+            
+            return bestMatch;
+        }
+
+        function extractQuantity(ingredientText) {
+            const patterns = [
+                /(\d+(?:[.,]\d+)?)\s*g/i,
+                /(\d+(?:[.,]\d+)?)\s*kg/i,
+                /(\d+(?:[.,]\d+)?)\s*ml/i,
+                /(\d+(?:[.,]\d+)?)\s*l/i,
+                /(\d+(?:[.,]\d+)?)\s*ks/i
+            ];
+            
+            for (const pattern of patterns) {
+                const match = ingredientText.match(pattern);
+                if (match) {
+                    let value = parseFloat(match[1].replace(',', '.'));
+                    if (ingredientText.match(/kg/i)) value *= 1000;
+                    if (ingredientText.match(/\bl\b/i)) value *= 1000;
+                    return value;
+                }
+            }
+            
+            return 0;
+        }
+
+        function checkIngredientInDatabase(input) {
+            const text = input.value.trim();
+            if (!text) return;
+            
+            const match = findIngredientMatch(text);
+            if (match) {
+                input.classList.remove('not-found');
+                input.classList.add('found');
+                input.title = `✓ ${match.name} (${match.price} Kč)`;
+            } else {
+                input.classList.remove('found');
+                input.classList.add('not-found');
+                input.title = '⚠️ Není v databázi';
+            }
+        }
+
+        function calculateRecipePrice() {
+            const ingredientInputs = document.querySelectorAll('.recipe-ingredient-input');
+            let totalPrice = 0;
+            let unmatchedCount = 0;
+            
+            ingredientInputs.forEach(input => {
+                const ingredientText = input.value.trim();
+                if (!ingredientText) return;
+                
+                const match = findIngredientMatch(ingredientText);
+                if (match) {
+                    const quantity = extractQuantity(ingredientText);
+                    const unitQuantity = extractQuantity(match.unit);
+                    
+                    if (quantity > 0 && unitQuantity > 0) {
+                        const ratio = quantity / unitQuantity;
+                        totalPrice += match.price * ratio;
+                    } else {
+                        totalPrice += match.price;
+                    }
+                } else {
+                    unmatchedCount++;
+                }
+            });
+            
+            if (unmatchedCount > 0) {
+                alert(`⚠️ ${unmatchedCount} ingrediencí není v databázi. Přidejte je pro přesný výpočet.`);
+            }
+            
+            document.getElementById('recipePrice').value = Math.round(totalPrice);
+        }
+
+        // ===== NÁKUPNÍ SEZNAM =====
+        function generateShoppingList() {
+            const ingredientsMap = {};
+            const usedRecipes = new Set();
+            
+            Object.entries(weekPlan).forEach(([mealKey, recipeId]) => {
+                if (!leftovers[mealKey] && !usedRecipes.has(recipeId)) {
+                    const recipe = recipes.find(r => r.id === recipeId);
+                    if (recipe && recipe.ingredients) {
+                        recipe.ingredients.forEach(ingredient => {
+                            const key = ingredient.toLowerCase();
+                            if (!ingredientsMap[key]) {
+                                ingredientsMap[key] = { name: ingredient, count: 0 };
+                            }
+                            ingredientsMap[key].count++;
+                        });
+                        usedRecipes.add(recipeId);
+                    }
+                }
+            });
+            
+            shoppingList = Object.values(ingredientsMap).map(item => ({
+                ...item,
+                checked: false,
+                category: 'Potraviny'
+            }));
+            
+            if (shoppingList.length > 0) {
+                shoppingHistory.unshift({
+                    date: new Date().toISOString(),
+                    dateLabel: new Date().toLocaleDateString('cs-CZ'),
+                    items: JSON.parse(JSON.stringify(shoppingList))
+                });
+                
+                if (shoppingHistory.length > 10) {
+                    shoppingHistory = shoppingHistory.slice(0, 10);
+                }
+            }
+            
+            saveData();
+            renderShoppingList();
+            switchTab('shopping');
+            document.querySelectorAll('.tab')[3].click();
+        }
+
+        function renderShoppingList() {
+            const container = document.getElementById('shoppingList');
+            
+            if (shoppingList.length === 0) {
+                container.innerHTML = '<p style="color: var(--text-secondary);">Seznam je prázdný. Vygenerujte jej z plánovače.</p>';
+                return;
+            }
+            
+            const categories = {};
+            shoppingList.forEach(item => {
+                if (!categories[item.category]) categories[item.category] = [];
+                categories[item.category].push(item);
+            });
+            
+            let html = '';
+            Object.entries(categories).forEach(([category, items]) => {
+                html += `<div class="shopping-category"><h3>${category}</h3>`;
+                items.forEach(item => {
+                    const globalIndex = shoppingList.indexOf(item);
+                    const searchQuery = encodeURIComponent(item.name.replace(/\d+g\s?|\d+ml\s?/gi, '').trim());
+                    const rohlikUrl = `https://www.rohlik.cz/hledat?q=${searchQuery}&companyId=1`;
+                    
+                    html += `
+                        <div class="shopping-item ${item.checked ? 'checked' : ''}">
+                            <label style="display: flex; align-items: center; flex: 1;">
+                                <input type="checkbox" ${item.checked ? 'checked' : ''} 
+                                    onchange="toggleShoppingItem(${globalIndex})">
+                                <span>${item.name} ${item.count > 1 ? `(${item.count}x)` : ''}</span>
+                            </label>
+                            <a href="${rohlikUrl}" target="_blank" class="rohlik-badge" style="text-decoration: none;">🛒</a>
+                        </div>
+                    `;
+                });
+                html += `</div>`;
+            });
+            
+            container.innerHTML = html;
+        }
+
+        function toggleShoppingItem(index) {
+            shoppingList[index].checked = !shoppingList[index].checked;
+            saveData();
+            renderShoppingList();
+            
+            if (document.getElementById('checkedItemsList').style.display !== 'none') {
+                generateCheckedList();
+            }
+        }
+
+        function generateCheckedList() {
+            const checkedSection = document.getElementById('checkedItemsList');
+            const checkedContainer = document.getElementById('checkedItems');
+            
+            const checkedItems = shoppingList.filter(item => item.checked);
+            
+            if (checkedItems.length === 0) {
+                alert('Žádné označené položky');
+                checkedSection.style.display = 'none';
+                return;
+            }
+            
+            checkedSection.style.display = 'block';
+            
+            let html = '<div class="shopping-category"><h3>K nákupu</h3>';
+            checkedItems.forEach(item => {
+                const searchQuery = encodeURIComponent(item.name.replace(/\d+g\s?|\d+ml\s?/gi, '').trim());
+                const rohlikUrl = `https://www.rohlik.cz/hledat?q=${searchQuery}&companyId=1`;
+                
+                html += `
+                    <div class="shopping-item">
+                        <span>${item.name} ${item.count > 1 ? `(${item.count}x)` : ''}</span>
+                        <a href="${rohlikUrl}" target="_blank" class="rohlik-badge" style="text-decoration: none;">🛒</a>
+                    </div>
+                `;
+            });
+            html += '</div>';
+            
+            checkedContainer.innerHTML = html;
+            checkedSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function toggleHistory() {
+            const historySection = document.getElementById('shoppingHistory');
+            
+            if (historySection.style.display === 'none') {
+                renderHistory();
+                historySection.style.display = 'block';
+            } else {
+                historySection.style.display = 'none';
+            }
+        }
+
+        function renderHistory() {
+            const container = document.getElementById('historyList');
+            
+            if (shoppingHistory.length === 0) {
+                container.innerHTML = '<p style="color: var(--text-secondary);">Žádná historie.</p>';
+                return;
+            }
+            
+            let html = '';
+            shoppingHistory.forEach((entry, index) => {
+                const itemCount = entry.items.length;
+                html += `
+                    <div class="shopping-list" style="margin-bottom: 15px; cursor: pointer; background: var(--bg-tertiary); padding: 15px; border-radius: 8px; border: 1px solid var(--border);" onclick="loadHistoryList(${index})">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <strong style="color: var(--accent-orange);">${entry.dateLabel}</strong><br>
+                                <small style="color: var(--text-secondary);">${itemCount} položek</small>
+                            </div>
+                            <button class="btn btn-primary btn-small" onclick="event.stopPropagation(); loadHistoryList(${index})">Načíst</button>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+
+        function loadHistoryList(index) {
+            const entry = shoppingHistory[index];
+            
+            if (confirm(`Načíst seznam z ${entry.dateLabel}?`)) {
+                shoppingList = JSON.parse(JSON.stringify(entry.items));
+                shoppingList.forEach(item => item.checked = false);
+                saveData();
+                renderShoppingList();
+                document.getElementById('shoppingHistory').style.display = 'none';
+            }
+        }
+
+        // ===== STATISTIKY =====
+        function renderStats() {
+            let totalCalories = 0, totalProtein = 0, totalCarbs = 0, totalFat = 0;
+            let totalPrice = 0, mealCount = 0, leftoverCount = 0;
+            const usedRecipes = new Set();
+
+            Object.entries(weekPlan).forEach(([mealKey, recipeId]) => {
+                const recipe = recipes.find(r => r.id === recipeId);
+                if (recipe) {
+                    totalCalories += recipe.calories;
+                    totalProtein += recipe.protein;
+                    totalCarbs += recipe.carbs;
+                    totalFat += recipe.fat;
+                    mealCount++;
+                    
+                    if (leftovers[mealKey]) {
+                        leftoverCount++;
+                    } else if (!usedRecipes.has(recipeId)) {
+                        totalPrice += recipe.price || 0;
+                        usedRecipes.add(recipeId);
+                    }
+                }
+            });
+
+            const budgetStatus = totalPrice <= weeklyBudget.max ? 'success' : 'danger';
+
+            const statsGrid = document.getElementById('statsGrid');
+            statsGrid.innerHTML = `
+                <div class="stat-card">
+                    <h3>${mealCount}</h3>
+                    <p>Naplánováno jídel</p>
+                </div>
+                <div class="stat-card ${budgetStatus}">
+                    <h3>${totalPrice} Kč</h3>
+                    <p>Týdenní náklady</p>
+                </div>
+                <div class="stat-card success">
+                    <h3>${leftoverCount}</h3>
+                    <p>Použití zbytků</p>
+                </div>
+                <div class="stat-card">
+                    <h3>${totalCalories}</h3>
+                    <p>Celkové kalorie</p>
+                </div>
+            `;
+
+            const nutritionBars = document.getElementById('nutritionBars');
+            const dailyProtein = 150, dailyCarbs = 500, dailyFat = 140;
+            const avgProtein = totalProtein / 7, avgCarbs = totalCarbs / 7, avgFat = totalFat / 7;
+
+            nutritionBars.innerHTML = `
+                <div class="nutrition-bar">
+                    <div class="nutrition-bar-header">
+                        <span>Bílkoviny (denní průměr)</span>
+                        <span>${Math.round(avgProtein)}g / ${dailyProtein}g</span>
+                    </div>
+                    <div class="nutrition-bar-fill">
+                        <div class="nutrition-bar-progress" style="width: ${Math.min(100, (avgProtein/dailyProtein)*100)}%">
+                            ${Math.round((avgProtein/dailyProtein)*100)}%
+                        </div>
+                    </div>
+                </div>
+                <div class="nutrition-bar">
+                    <div class="nutrition-bar-header">
+                        <span>Sacharidy (denní průměr)</span>
+                        <span>${Math.round(avgCarbs)}g / ${dailyCarbs}g</span>
+                    </div>
+                    <div class="nutrition-bar-fill">
+                        <div class="nutrition-bar-progress" style="width: ${Math.min(100, (avgCarbs/dailyCarbs)*100)}%">
+                            ${Math.round((avgCarbs/dailyCarbs)*100)}%
+                        </div>
+                    </div>
+                </div>
+                <div class="nutrition-bar">
+                    <div class="nutrition-bar-header">
+                        <span>Tuky (denní průměr)</span>
+                        <span>${Math.round(avgFat)}g / ${dailyFat}g</span>
+                    </div>
+                    <div class="nutrition-bar-fill">
+                        <div class="nutrition-bar-progress" style="width: ${Math.min(100, (avgFat/dailyFat)*100)}%">
+                            ${Math.round((avgFat/dailyFat)*100)}%
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Spuštění
+        init();
+    </script>
+</body>
+</html>
