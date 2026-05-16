@@ -1134,6 +1134,49 @@
     </div>
 
     <script>
+        // Storage Adapter - fallback na localStorage pokud window.storage není dostupné
+        const storageAdapter = {
+            async get(key, shared = false) {
+                if (typeof window.storage !== 'undefined') {
+                    try {
+                        return await window.storage.get(key, shared);
+                    } catch (error) {
+                        console.warn('window.storage.get failed, using localStorage fallback');
+                    }
+                }
+                // Fallback na localStorage
+                const value = localStorage.getItem(key);
+                // DŮLEŽITÉ: Vrátit ve stejném formátu jako window.storage
+                return value ? { key, value, shared } : null;
+            },
+            
+            async set(key, value, shared = false) {
+                if (typeof window.storage !== 'undefined') {
+                    try {
+                        return await window.storage.set(key, value, shared);
+                    } catch (error) {
+                        console.warn('window.storage.set failed, using localStorage fallback');
+                    }
+                }
+                // Fallback na localStorage
+                localStorage.setItem(key, value);
+                return { key, value, shared };
+            },
+            
+            async delete(key, shared = false) {
+                if (typeof window.storage !== 'undefined') {
+                    try {
+                        return await window.storage.delete(key, shared);
+                    } catch (error) {
+                        console.warn('window.storage.delete failed, using localStorage fallback');
+                    }
+                }
+                // Fallback na localStorage
+                localStorage.removeItem(key);
+                return { key, deleted: true, shared };
+            }
+        };
+    
         // Globální proměnné
         let recipes = [];
         let weekPlan = {};
@@ -1220,20 +1263,24 @@
         // Načtení dat
         async function loadData() {
             try {
+                console.log('Loading data...');
                 const data = await Promise.all([
-                    window.storage.get('recipes_final', true),
-                    window.storage.get('weekPlan_final', true),
-                    window.storage.get('shoppingList', true),
-                    window.storage.get('shoppingHistory', true),
-                    window.storage.get('ingredients', true),
-                    window.storage.get('leftovers', true),
-                    window.storage.get('recipeIngredients', true),
-                    window.storage.get('specialDays', true),
-                    window.storage.get('mealNotes', true)
+                    storageAdapter.get('recipes_final', true),
+                    storageAdapter.get('weekPlan_final', true),
+                    storageAdapter.get('shoppingList', true),
+                    storageAdapter.get('shoppingHistory', true),
+                    storageAdapter.get('ingredients', true),
+                    storageAdapter.get('leftovers', true),
+                    storageAdapter.get('recipeIngredients', true),
+                    storageAdapter.get('specialDays', true),
+                    storageAdapter.get('mealNotes', true)
                 ]);
 
                 if (data[0]) recipes = JSON.parse(data[0].value);
-                if (data[1]) weekPlan = JSON.parse(data[1].value);
+                if (data[1]) {
+                    weekPlan = JSON.parse(data[1].value);
+                    console.log('weekPlan loaded:', weekPlan);
+                }
                 if (data[2]) shoppingList = JSON.parse(data[2].value);
                 if (data[3]) shoppingHistory = JSON.parse(data[3].value);
                 if (data[4]) ingredients = JSON.parse(data[4].value);
@@ -1241,7 +1288,15 @@
                 if (data[6]) recipeIngredients = JSON.parse(data[6].value);
                 if (data[7]) specialDays = JSON.parse(data[7].value);
                 if (data[8]) mealNotes = JSON.parse(data[8].value);
+                
+                console.log('Data loaded:', { 
+                    recipesCount: recipes.length, 
+                    ingredientsCount: ingredients.length,
+                    weekPlanKeys: Object.keys(weekPlan),
+                    totalMeals: Object.values(weekPlan).reduce((sum, week) => sum + Object.keys(week).length, 0)
+                });
             } catch (error) {
+                console.error('Chyba při načítání:', error);
                 console.log('Načítám nová data...');
             }
         }
@@ -1249,19 +1304,37 @@
         // Uložení dat
         async function saveData() {
             try {
+                console.log('Saving data...', { 
+                    recipesCount: recipes.length, 
+                    ingredientsCount: ingredients.length 
+                });
+                
                 await Promise.all([
-                    window.storage.set('recipes_final', JSON.stringify(recipes), true),
-                    window.storage.set('weekPlan_final', JSON.stringify(weekPlan), true),
-                    window.storage.set('shoppingList', JSON.stringify(shoppingList), true),
-                    window.storage.set('shoppingHistory', JSON.stringify(shoppingHistory), true),
-                    window.storage.set('ingredients', JSON.stringify(ingredients), true),
-                    window.storage.set('leftovers', JSON.stringify(leftovers), true),
-                    window.storage.set('recipeIngredients', JSON.stringify(recipeIngredients), true),
-                    window.storage.set('specialDays', JSON.stringify(specialDays), true),
-                    window.storage.set('mealNotes', JSON.stringify(mealNotes), true)
+                    storageAdapter.set('recipes_final', JSON.stringify(recipes), true),
+                    storageAdapter.set('weekPlan_final', JSON.stringify(weekPlan), true),
+                    storageAdapter.set('shoppingList', JSON.stringify(shoppingList), true),
+                    storageAdapter.set('shoppingHistory', JSON.stringify(shoppingHistory), true),
+                    storageAdapter.set('ingredients', JSON.stringify(ingredients), true),
+                    storageAdapter.set('leftovers', JSON.stringify(leftovers), true),
+                    storageAdapter.set('recipeIngredients', JSON.stringify(recipeIngredients), true),
+                    storageAdapter.set('specialDays', JSON.stringify(specialDays), true),
+                    storageAdapter.set('mealNotes', JSON.stringify(mealNotes), true)
                 ]);
+                
+                console.log('Data saved successfully');
+                
+                // Zkontrolovat že se data opravdu uložila
+                const testLoad = await storageAdapter.get('weekPlan_final', true);
+                if (testLoad) {
+                    const testData = JSON.parse(testLoad.value);
+                    console.log('Verification: weekPlan saved correctly, meals:', 
+                        Object.values(testData).reduce((sum, week) => sum + Object.keys(week).length, 0));
+                } else {
+                    console.error('WARNING: weekPlan not found after save!');
+                }
             } catch (error) {
                 console.error('Chyba při ukládání:', error);
+                alert('❌ Chyba při ukládání dat: ' + error.message);
             }
         }
 
@@ -1403,18 +1476,36 @@
 
         // ===== PLÁNOVAČ =====
         function renderWeekPlan() {
-            const grid = document.getElementById('weekGrid');
-            grid.innerHTML = '';
-            
-            // Aktualizovat nadpis
-            document.getElementById('weekTitle').textContent = getWeekLabel(currentWeekOffset);
-            
-            const weekKey = getWeekKey(currentWeekOffset);
-            const currentWeekPlan = weekPlan[weekKey] || {};
-            const currentLeftovers = leftovers[weekKey] || {};
-            const currentSpecialDays = specialDays[weekKey] || {};
-            
-            const dates = getWeekDates(currentWeekOffset);
+            try {
+                const grid = document.getElementById('weekGrid');
+                if (!grid) {
+                    console.error('ERROR: weekGrid element not found!');
+                    return;
+                }
+                grid.innerHTML = '';
+                
+                // Aktualizovat nadpis
+                const weekTitle = document.getElementById('weekTitle');
+                if (!weekTitle) {
+                    console.error('ERROR: weekTitle element not found!');
+                    return;
+                }
+                weekTitle.textContent = getWeekLabel(currentWeekOffset);
+                
+                const weekKey = getWeekKey(currentWeekOffset);
+                const currentWeekPlan = weekPlan[weekKey] || {};
+                const currentLeftovers = leftovers[weekKey] || {};
+                const currentSpecialDays = specialDays[weekKey] || {};
+                
+                console.log('renderWeekPlan:', { 
+                    weekKey, 
+                    currentWeekOffset,
+                    mealCount: Object.keys(currentWeekPlan).length,
+                    weekPlanKeys: Object.keys(weekPlan)
+                });
+                
+                const dates = getWeekDates(currentWeekOffset);
+                console.log('dates:', dates);
 
             dates.forEach((date, dayIndex) => {
                 const dayCard = document.createElement('div');
@@ -1487,6 +1578,13 @@
             });
 
             updateBudget();
+            console.log('renderWeekPlan completed successfully');
+            
+            } catch (error) {
+                console.error('ERROR in renderWeekPlan:', error);
+                console.error('Stack:', error.stack);
+                alert('❌ Chyba při zobrazení týdne: ' + error.message);
+            }
         }
 
         function renderMealSlots(dayIndex, mealType, maxSlots = 1, weekKey, currentWeekPlan, currentLeftovers) {
@@ -1501,6 +1599,10 @@
             existingSlots.forEach(mealKey => {
                 const recipe = recipes.find(r => r.id === currentWeekPlan[mealKey]);
                 const isLeftover = currentLeftovers[mealKey];
+                
+                // Extrahovat slotIndex z mealKey (formát: "dayIndex-mealType-slotIndex")
+                const mealKeyParts = mealKey.split('-');
+                const slotIndex = mealKeyParts.length > 2 ? mealKeyParts[2] : '0';
                 
                 if (recipe) {
                     const leftoverClass = isLeftover ? 'is-leftover' : '';
@@ -1652,6 +1754,9 @@
             const { weekKey, mealKey } = currentMealSlot;
             const value = selected.value;
             
+            console.log('confirmMealSelection:', { weekKey, mealKey, value });
+            console.log('weekPlan BEFORE:', JSON.parse(JSON.stringify(weekPlan)));
+            
             if (!weekPlan[weekKey]) weekPlan[weekKey] = {};
             if (!leftovers[weekKey]) leftovers[weekKey] = {};
             
@@ -1665,6 +1770,8 @@
                 weekPlan[weekKey][mealKey] = recipeId;
                 if (leftovers[weekKey][mealKey]) delete leftovers[weekKey][mealKey];
             }
+            
+            console.log('weekPlan AFTER:', JSON.parse(JSON.stringify(weekPlan)));
             
             saveData();
             closeMealModal();
@@ -2191,12 +2298,14 @@
             
             saveData();
             closeRecipeModal();
-            renderRecipes();
-            renderWeekPlan();
-            updateTabCounts();
             
-            // Success notifikace
-            showNotification('✅ Recept uložen', 'success');
+            // Počkat než se modal zavře
+            setTimeout(() => {
+                renderRecipes();
+                renderWeekPlan();
+                updateTabCounts();
+                showNotification('✅ Recept uložen', 'success');
+            }, 100);
             
             if (currentMealSlot) {
                 selectMeal(currentMealSlot.dayIndex, currentMealSlot.mealType);
@@ -2726,12 +2835,15 @@
 
         // ===== NÁKUPNÍ SEZNAM =====
         function generateShoppingList() {
-            const weekKey = getWeekKey(currentWeekOffset);
-            const currentWeekPlan = weekPlan[weekKey] || {};
-            const currentLeftovers = leftovers[weekKey] || {};
-            
-            const ingredientsMap = {};
-            const usedRecipes = new Set();
+            try {
+                const weekKey = getWeekKey(currentWeekOffset);
+                const currentWeekPlan = weekPlan[weekKey] || {};
+                const currentLeftovers = leftovers[weekKey] || {};
+                
+                console.log('generateShoppingList:', { weekKey, mealsCount: Object.keys(currentWeekPlan).length });
+                
+                const ingredientsMap = {};
+                const usedRecipes = new Set();
             
             Object.entries(currentWeekPlan).forEach(([mealKey, recipeId]) => {
                 if (!currentLeftovers[mealKey] && !usedRecipes.has(recipeId)) {
@@ -2796,15 +2908,30 @@
             updateTabCounts();
             switchTab('shopping');
             document.querySelectorAll('.tab')[3].click();
+            
+            console.log('Shopping list generated:', shoppingList.length, 'items');
+            
+            } catch (error) {
+                console.error('ERROR in generateShoppingList:', error);
+                alert('❌ Chyba při generování nákupního seznamu: ' + error.message);
+            }
         }
 
         function renderShoppingList() {
-            const container = document.getElementById('shoppingList');
-            
-            if (shoppingList.length === 0) {
-                container.innerHTML = '<p style="color: var(--text-secondary);">Seznam je prázdný. Vygenerujte jej z plánovače.</p>';
-                return;
-            }
+            try {
+                const container = document.getElementById('shoppingList');
+                
+                if (!container) {
+                    console.error('ERROR: shoppingList container not found!');
+                    return;
+                }
+                
+                console.log('renderShoppingList: items =', shoppingList.length);
+                
+                if (shoppingList.length === 0) {
+                    container.innerHTML = '<p style="color: var(--text-secondary);">Seznam je prázdný. Vygenerujte jej z plánovače.</p>';
+                    return;
+                }
             
             const categories = {};
             shoppingList.forEach(item => {
@@ -2879,6 +3006,12 @@
             }
             
             container.innerHTML = html;
+            console.log('renderShoppingList completed, totalCost:', totalCost);
+            
+            } catch (error) {
+                console.error('ERROR in renderShoppingList:', error);
+                alert('❌ Chyba při zobrazení nákupního seznamu: ' + error.message);
+            }
         }
 
         function toggleShoppingItem(index) {
